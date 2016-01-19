@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:weightSum="1"
+    android:background="@color/colorPrimaryDark">
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"/>
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp">
+            <AutoCompleteTextView
+                android:id="@+id/editTextAddedShow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignLeft="@+id/buttonAdded"
+                android:layout_alignStart="@+id/buttonAdded"
+                android:ems="10"
+                android:inputType="textCapWords"
+                android:text=""
+                android:gravity="top"
+                android:textColor="#ff1b1b1b">
+                <requestFocus/>
+            </AutoCompleteTextView>
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Episode"
+                android:id="@+id/labelEpisode"
+                android:gravity="left"
+                android:layout_below="@+id/labeShow"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="30dp"
+                android:textColor="#ff1b1b1b"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Show"
+                android:id="@+id/labeShow"
+                android:gravity="left"
+                android:layout_marginTop="15dp"
+                android:textColor="#ff1b1b1b"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Season"
+                android:id="@+id/labelSeason"
+                android:gravity="left"
+                android:layout_below="@+id/labelEpisode"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="30dp"
+                android:textColor="#ff1b1b1b"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Save"
+                android:id="@+id/buttonAdded"
+                android:layout_below="@+id/labelSeason"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/editTextAddedEpisode"
+                android:layout_above="@+id/labelSeason"
+                android:layout_toRightOf="@+id/buttonAdded"
+                android:layout_toEndOf="@+id/buttonAdded"
+                android:textColor="#ff1b1b1b"/>
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:ems="10"
+                android:id="@+id/editTextAddedSeason"
+                android:layout_above="@+id/buttonAdded"
+                android:layout_alignRight="@+id/editTextAddedEpisode"
+                android:layout_alignEnd="@+id/editTextAddedEpisode"
+                android:layout_toRightOf="@+id/buttonAdded"
+                android:layout_toEndOf="@+id/buttonAdded"
+                android:textColor="#ff1b1b1b"/>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</LinearLayout>

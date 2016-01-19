@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MyEpisode</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_add_watched">Add Watched</string>
+</resources>
