@@ -37,6 +37,7 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
     public void onBindViewHolder(ThumbHolder holder, int position) {
         Thumbnail thumbnail = thumbnailList.get(position);
         holder.vThumb.setImageResource(thumbnail.getThumbnailID()); //Get resource from thumbnail
+        holder.vThumb.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
     @Override

@@ -11,7 +11,8 @@
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/tool_bar"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="false">
 
 
         <LinearLayout
@@ -22,15 +23,18 @@
             android:layout_alignParentStart="true">
             <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:orientation="vertical" android:layout_width="match_parent"
-                android:layout_height="350dp">
+                android:layout_height="300dp">
 
                 <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="270dp"
+                    android:layout_height="220dp"
                     android:id="@+id/thumbnailLarge"
                     android:layout_alignParentTop="true"
                     android:src="@drawable/chuck_backdrop"
-                    android:elevation="5dp"/>
+                    android:elevation="5dp"
+                    android:layout_alignParentEnd="false"
+                    android:layout_alignParentLeft="false"
+                    android:layout_alignParentRight="false" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -49,9 +53,9 @@
                     android:layout_marginRight="5dp"
                     android:layout_below="@+id/thumbnailLarge"
                     android:layout_alignParentEnd="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginBottom="18dp" />
+                    android:layout_alignParentBottom="false"
+                    android:layout_marginTop="6dp"
+                    android:layout_alignParentTop="false" />
 
             </RelativeLayout>
 
