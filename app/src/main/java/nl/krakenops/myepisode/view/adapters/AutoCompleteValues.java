@@ -1,4 +1,4 @@
-package nl.krakenops.myepisode.adapters;
+package nl.krakenops.myepisode.view.adapters;
 
 /**
  * Created by Matthijs on 19/01/2016.

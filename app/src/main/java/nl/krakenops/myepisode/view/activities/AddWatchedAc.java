@@ -1,6 +1,5 @@
-package nl.krakenops.myepisode.activities;
+package nl.krakenops.myepisode.view.activities;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -20,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
-import nl.krakenops.myepisode.adapters.CompleteValuesAdapter;
+import nl.krakenops.myepisode.view.adapters.CompleteValuesAdapter;
 
 /**
  * Created by Matthijs on 19/01/2016.
@@ -88,7 +87,7 @@ public class AddWatchedAc extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_activity, menu);
         return true;
     }
 

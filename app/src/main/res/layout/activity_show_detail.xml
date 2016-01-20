@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="nl.krakenops.myepisode.view.activities.ShowDetailActivity">
+    <include
+        android:id="@+id/tool_bar"
+        layout="@layout/tool_bar"/>
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/tool_bar"
+        android:layout_alignParentBottom="true">
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true">
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical" android:layout_width="match_parent"
+                android:layout_height="350dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="270dp"
+                    android:id="@+id/thumbnailLarge"
+                    android:layout_alignParentTop="true"
+                    android:src="@drawable/chuck_backdrop"
+                    android:elevation="5dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="23dp"
+                    android:text="Episode 5 | Season 3"
+                    android:id="@+id/episodeWatched"
+                    android:layout_marginTop="20dp"
+                    android:layout_below="@+id/thumbnailLarge" />
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+1"
+                    android:id="@+id/buttonUpped"
+                    android:layout_marginRight="5dp"
+                    android:layout_below="@+id/thumbnailLarge"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginTop="18dp"
+                    android:layout_marginBottom="18dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".view.activities.ShowDetailActivity" >
+
+                <ExpandableListView
+                    android:id="@+id/season_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent" >
+                </ExpandableListView>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

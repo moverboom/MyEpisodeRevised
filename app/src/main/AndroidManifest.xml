@@ -18,9 +18,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.AddWatchedAc"
+            android:name=".view.activities.AddWatchedAc"
             android:label="@string/title_activity_add_watched"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
+        <activity
+            android:name=".view.activities.ShowDetailActivity"
+            android:label="@string/title_activity_show_detail"
+            android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

@@ -1,7 +1,6 @@
-package nl.krakenops.myepisode.fragments;
+package nl.krakenops.myepisode.view.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,13 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
-import nl.krakenops.myepisode.adapters.ThumbAdapter;
-import nl.krakenops.myepisode.adapters.Thumbnail;
+import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
+import nl.krakenops.myepisode.model.Thumbnail;
 
 /**
  * Created by Matthijs on 19/01/2016.
  */
-public class AllFrag extends Fragment {
+public class FavFrag extends Fragment {
     private View mFragmentView;
 
     @Override
@@ -35,7 +34,7 @@ public class AllFrag extends Fragment {
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(createList(15));
+        ThumbAdapter thumbAdapter = new ThumbAdapter(createList(15), getActivity());
         mRecyclerView.setAdapter(thumbAdapter);
         return mFragmentView;
     }

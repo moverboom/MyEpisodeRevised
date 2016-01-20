@@ -1,4 +1,4 @@
-package nl.krakenops.myepisode.adapters;
+package nl.krakenops.myepisode.view.adapters;
 
 import android.app.Activity;
 import android.util.Log;

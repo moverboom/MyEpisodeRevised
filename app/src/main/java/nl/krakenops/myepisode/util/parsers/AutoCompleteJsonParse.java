@@ -9,7 +9,7 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.TvResultsPage;
 import info.movito.themoviedbapi.model.tv.TvSeries;
-import nl.krakenops.myepisode.adapters.AutoCompleteValues;
+import nl.krakenops.myepisode.view.adapters.AutoCompleteValues;
 
 /**
  * Created by Matthijs on 19/01/2016.
