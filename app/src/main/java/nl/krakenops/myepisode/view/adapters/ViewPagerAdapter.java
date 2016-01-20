@@ -39,9 +39,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
                 RecentFrag recentFrag = new RecentFrag().newInstance(thumbnailController.getRecentShows());
                 return recentFrag;
             case 1:
-                return new FavFrag();
+                FavFrag favFrag = new FavFrag().newInstance(thumbnailController.getFavShows());
+                return favFrag;
             case 2:
-                return new AllFrag();
+                AllFrag allFrag = new AllFrag().newInstance(thumbnailController.getAllShows());
+                return allFrag;
         }
         return null;
     }

@@ -16,6 +16,7 @@ import nl.krakenops.myepisode.model.Thumbnail;
  */
 public class ThumbnailController {
     LinkedHashMap<String, Thumbnail> thumbnailHashMap;
+    long DAY_IN_MS = 1000 * 60 * 60 * 24;
 
     public ThumbnailController() {
         thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
@@ -26,9 +27,9 @@ public class ThumbnailController {
      * Returns a List with all shows as Thumbnail.
      * @return List with Thumbnails
      */
-    public List<Thumbnail> getAllShows() {
+    public ArrayList<Thumbnail> getAllShows() {
         /*IMPLEMENT DB CONNECTION*/
-        List<Thumbnail> result = new ArrayList<Thumbnail>();
+        ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
         Iterator it = thumbnailHashMap.entrySet().iterator();
         while ( it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
@@ -49,7 +50,9 @@ public class ThumbnailController {
         Iterator it = thumbnailHashMap.entrySet().iterator();
         while ( it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            result.add((Thumbnail)pair.getValue());
+            if (((Thumbnail)pair.getValue()).getLastWatched().after(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)))) {
+                result.add((Thumbnail)pair.getValue());
+            }
         }
         return result;
     }
@@ -59,13 +62,15 @@ public class ThumbnailController {
      *
      * @return List with Thumbnails
      */
-    public List<Thumbnail> getFavShows() {
+    public ArrayList<Thumbnail> getFavShows() {
         /*IMPLEMENT CHECK FOR FAVORITE*/
-        List<Thumbnail> result = new ArrayList<Thumbnail>();
+        ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
         Iterator it = thumbnailHashMap.entrySet().iterator();
         while ( it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            result.add((Thumbnail)pair.getValue());
+            if (((Thumbnail)pair.getValue()).isFavorite()) {
+                result.add((Thumbnail) pair.getValue());
+            }
         }
         return result;
     }
@@ -76,10 +81,11 @@ public class ThumbnailController {
                 Thumbnail tmpThumbnail = new Thumbnail();
                 tmpThumbnail.setName("Chuck" + i);
                 tmpThumbnail.setFavorite(true);
+                tmpThumbnail.setLastWatched(new Date(System.currentTimeMillis() - (i * DAY_IN_MS)));
                 LinkedHashMap<String, Episode> episodeList = new LinkedHashMap<String, Episode>();
                 for (int j = 0; j < 10; j++) {
                     Episode episode = new Episode(j, j);
-                    episode.setDateWatched(new Date());
+                    episode.setDateWatched(new Date(System.currentTimeMillis() - (i * DAY_IN_MS)));
                     episodeList.put(String.valueOf(episode.getSeason()), episode);
                 }
                 tmpThumbnail.setWatchedEpisodes(episodeList);
@@ -88,10 +94,11 @@ public class ThumbnailController {
                 Thumbnail tmpThumbnail = new Thumbnail();
                 tmpThumbnail.setName("Chuck" + i);
                 tmpThumbnail.setFavorite(false);
+                tmpThumbnail.setLastWatched(new Date(System.currentTimeMillis() - (i * DAY_IN_MS)));
                 LinkedHashMap<String, Episode> episodeList = new LinkedHashMap<String, Episode>();
                 for (int j = 0; j < 10; j++) {
                     Episode episode = new Episode(j, j);
-                    episode.setDateWatched(new Date());
+                    episode.setDateWatched(new Date(System.currentTimeMillis() - (i * DAY_IN_MS)));
                     episodeList.put(String.valueOf(episode.getSeason()), episode);
                 }
                 tmpThumbnail.setWatchedEpisodes(episodeList);

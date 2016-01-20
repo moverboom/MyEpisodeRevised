@@ -1,6 +1,7 @@
 package nl.krakenops.myepisode.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -14,6 +15,7 @@ public class Thumbnail implements Serializable {
     private String name;
     private int thumbnail = R.drawable.chuck;
     private boolean isFavorite = false;
+    private Date lastWatched = new Date(); //Instantiate new Date
     private LinkedHashMap<String, Episode> watchedEpisodes; //Key = SeasonNumber    Value = Episode object
 
     public Thumbnail() {
@@ -48,6 +50,14 @@ public class Thumbnail implements Serializable {
                 watchedEpisodes.put((String)pair.getKey(), (Episode)pair.getValue());
             }
         }
+    }
+
+    public Date getLastWatched() {
+        return lastWatched;
+    }
+
+    public void setLastWatched(Date date) {
+        this.lastWatched = date;
     }
 
     public void setName(String name) {

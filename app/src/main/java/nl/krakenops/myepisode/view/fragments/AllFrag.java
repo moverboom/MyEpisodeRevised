@@ -19,7 +19,18 @@ import nl.krakenops.myepisode.model.Thumbnail;
  * Created by Matthijs on 19/01/2016.
  */
 public class AllFrag extends Fragment {
+    private static final String DESCIBABLE_KEY = "ArrayList<Thumbnail>";
+    private ArrayList<Thumbnail> mList;
     private View mFragmentView;
+
+
+    public static AllFrag newInstance(ArrayList<Thumbnail> list) {
+        AllFrag allFrag = new AllFrag();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DESCIBABLE_KEY, list);
+        allFrag.setArguments(bundle);
+        return allFrag;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,7 +45,9 @@ public class AllFrag extends Fragment {
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(createList(15), getActivity());
+        mList = (ArrayList<Thumbnail>) getArguments().getSerializable(DESCIBABLE_KEY);
+
+        ThumbAdapter thumbAdapter = new ThumbAdapter(mList, getActivity());
         mRecyclerView.setAdapter(thumbAdapter);
         return mFragmentView;
     }
