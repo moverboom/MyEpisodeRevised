@@ -1,6 +1,5 @@
 package nl.krakenops.myepisode.view.activities;
 
-import android.content.ClipData;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -169,6 +168,11 @@ public class ShowDetailActivity extends AppCompatActivity {
         this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_show_detail, menu);
+        if (thumbnail.isFavorite()) {
+            menu.getItem(R.id.action_fav_show).setIcon(R.drawable.ic_fav_show_set);
+        } else {
+            menu.getItem(R.id.action_fav_show).setIcon(R.drawable.ic_fav_show);
+        }
         return true;
     }
 
@@ -184,7 +188,13 @@ public class ShowDetailActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_fav_show) {
             MenuItem menuItem = menu.findItem(R.id.action_fav_show);
-            menuItem.setIcon(R.drawable.ic_fav_show_set);
+            if (!thumbnail.isFavorite()) {
+                menuItem.setIcon(R.drawable.ic_fav_show_set);
+                thumbnail.setFavorite(true);
+            } else {
+                menuItem.setIcon(R.drawable.ic_fav_show);
+                thumbnail.setFavorite(false);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
