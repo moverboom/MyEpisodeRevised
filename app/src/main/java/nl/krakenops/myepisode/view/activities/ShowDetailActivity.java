@@ -10,18 +10,28 @@ import android.widget.ExpandableListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import nl.krakenops.myepisode.R;
+import nl.krakenops.myepisode.model.Episode;
+import nl.krakenops.myepisode.model.Thumbnail;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
 
+/**
+ * This activity display detailed information about a watched tv show,
+ * such as which episodes have been watch, what te latest episode was and when the next episode airs (FUTURE PLAN)
+ * Thanks to theopentutorials.com from explaining how to use the ExpandableListView.
+ */
+
 public class ShowDetailActivity extends AppCompatActivity {
-    List<String> groupList;
-    List<String> childList;
+    List<String> groupList; //Seasons
+    List<String> childList; //Episodes
     Map<String, List<String>> episodeCollection;
     ExpandableListView expListView;
+    private Thumbnail thumbnail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +41,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        thumbnail = (Thumbnail)getIntent().getSerializableExtra("Thumbnail");
         createGroupList();
 
         createCollection();
@@ -59,36 +69,34 @@ public class ShowDetailActivity extends AppCompatActivity {
 
     private void createGroupList() {
         groupList = new ArrayList<String>();
-        groupList.add("1");
-        groupList.add("2");
-        groupList.add("3");
-        groupList.add("4");
-        groupList.add("5");
+//        groupList.add("1");
+//        groupList.add("2");
+//        groupList.add("3");
+//        groupList.add("4");
+//        groupList.add("5");
+
+        Iterator it = thumbnail.getWatchedEpisodes().entrySet().iterator();
+        while ( it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            Episode tmpEpisode = (Episode) pair.getValue();
+            groupList.add(String.valueOf(tmpEpisode.getSeason()));
+        }
     }
 
     private void createCollection() {
-        // preparing laptops collection(child)
-        String[] season1 = { "1", "2", "3" };
-        String[] season2 = { "1", "2", "3", "4" };
-        String[] season3 = { "1", "2", "3"  };
-        String[] season4 = { "1", "2", "3"  };
-        String[] season5 = { "1", "2", "3"  };
-
         episodeCollection = new LinkedHashMap<String, List<String>>();
 
-        for (String laptop : groupList) {
-            if (laptop.equals("1")) {
-                loadChild(season1);
-            } else if (laptop.equals("2"))
-                loadChild(season2);
-            else if (laptop.equals("3"))
-                loadChild(season3);
-            else if (laptop.equals("4"))
-                loadChild(season4);
-            else
-                loadChild(season5);
-
-            episodeCollection.put(laptop, childList);
+        Iterator it = thumbnail.getWatchedEpisodes().entrySet().iterator();
+        while ( it.hasNext()) {
+            Map.Entry pair = (Map.Entry) it.next();
+            if (episodeCollection.containsKey((String)pair.getKey())) {
+                episodeCollection.get((String)pair.getKey()).add((String)pair.getValue());
+            } else {
+                List<String> episodeList = new ArrayList<String>();
+                String episode = String.valueOf(((Episode)pair.getValue()).getEpisode());
+                episodeList.add(episode);
+                episodeCollection.put((String) pair.getKey(), episodeList);
+            }
         }
     }
 
@@ -97,6 +105,42 @@ public class ShowDetailActivity extends AppCompatActivity {
         for (String episode : episodes)
             childList.add(episode);
     }
+
+//    private void createGroupList() {
+//        groupList = new ArrayList<String>();
+//        groupList.add("1");
+//        groupList.add("2");
+//        groupList.add("3");
+//        groupList.add("4");
+//        groupList.add("5");
+//    }
+//
+//    private void createCollection() {
+//        // preparing laptops collection(child)
+//        String[] season1 = { "1", "2", "3" };
+//        String[] season2 = { "1", "2", "3", "4" };
+//        String[] season3 = { "1", "2", "3"  };
+//        String[] season4 = { "1", "2", "3"  };
+//        String[] season5 = { "1", "2", "3"  };
+//
+//        episodeCollection = new LinkedHashMap<String, List<String>>();
+//
+//        for (String laptop : groupList) {
+//            if (laptop.equals("1")) {
+//                loadChild(season1);
+//            } else if (laptop.equals("2"))
+//                loadChild(season2);
+//            else if (laptop.equals("3"))
+//                loadChild(season3);
+//            else if (laptop.equals("4"))
+//                loadChild(season4);
+//            else
+//                loadChild(season5);
+//
+//            episodeCollection.put(laptop, childList);
+//        }
+//    }
+
 
     private void setGroupIndicatorToRight() {
         /* Get the screen width */

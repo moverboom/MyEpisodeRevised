@@ -2,6 +2,7 @@ package nl.krakenops.myepisode.view.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
     public void onBindViewHolder(ThumbHolder holder, int position) {
         Thumbnail thumbnail = thumbnailList.get(position);
         holder.vThumb.setImageResource(thumbnail.getThumbnailID()); //Get resource from thumbnail
+        holder.vThumb.setTag(thumbnail);
         holder.vThumb.setScaleType(ImageView.ScaleType.FIT_XY);
     }
 
@@ -54,7 +56,8 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    activity.startActivity(new Intent(activity.getApplicationContext(), ShowDetailActivity.class));
+                    activity.startActivity(new Intent(activity.getApplicationContext(), ShowDetailActivity.class).putExtra("Thumbnail", (Thumbnail) vThumb.getTag()));
+
                 }
             });
         }

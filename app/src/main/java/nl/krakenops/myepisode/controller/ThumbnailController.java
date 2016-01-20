@@ -19,6 +19,7 @@ public class ThumbnailController {
 
     public ThumbnailController() {
         thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
+        createDataStub();
     }
 
     /**
@@ -45,7 +46,7 @@ public class ThumbnailController {
         /*IMPLEMENT DB CONNECTION + DATE CHECK*/
         ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
 //        Iterator it = thumbnailHashMap.entrySet().iterator();
-        Iterator it = createDataStub().entrySet().iterator();
+        Iterator it = thumbnailHashMap.entrySet().iterator();
         while ( it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             result.add((Thumbnail)pair.getValue());
@@ -69,22 +70,34 @@ public class ThumbnailController {
         return result;
     }
 
-    private LinkedHashMap<String, Thumbnail> createDataStub() {
-        LinkedHashMap<String, Thumbnail> linkedHashMap = new LinkedHashMap<String, Thumbnail>();
+    private void createDataStub() {
         for (int i = 0; i < 20; i++) {
-            Thumbnail tmpThumbnail = new Thumbnail();
-            tmpThumbnail.setName("Chuck" + i);
-            tmpThumbnail.setFavorite(true);
-            LinkedHashMap<String, Episode> episodeList = new LinkedHashMap<String, Episode>();
-            for (int j = 0; j < 10; j++) {
-                Episode episode = new Episode(j, j);
-                episode.setDateWatched(new Date());
-                episodeList.put(String.valueOf(episode.getSeason()), episode);
+            if (i%2 == 0) {
+                Thumbnail tmpThumbnail = new Thumbnail();
+                tmpThumbnail.setName("Chuck" + i);
+                tmpThumbnail.setFavorite(true);
+                LinkedHashMap<String, Episode> episodeList = new LinkedHashMap<String, Episode>();
+                for (int j = 0; j < 10; j++) {
+                    Episode episode = new Episode(j, j);
+                    episode.setDateWatched(new Date());
+                    episodeList.put(String.valueOf(episode.getSeason()), episode);
+                }
+                tmpThumbnail.setWatchedEpisodes(episodeList);
+                thumbnailHashMap.put(tmpThumbnail.getName(), tmpThumbnail);
+            } else {
+                Thumbnail tmpThumbnail = new Thumbnail();
+                tmpThumbnail.setName("Chuck" + i);
+                tmpThumbnail.setFavorite(false);
+                LinkedHashMap<String, Episode> episodeList = new LinkedHashMap<String, Episode>();
+                for (int j = 0; j < 10; j++) {
+                    Episode episode = new Episode(j, j);
+                    episode.setDateWatched(new Date());
+                    episodeList.put(String.valueOf(episode.getSeason()), episode);
+                }
+                tmpThumbnail.setWatchedEpisodes(episodeList);
+                thumbnailHashMap.put(tmpThumbnail.getName(), tmpThumbnail);
             }
-            tmpThumbnail.setWatchedEpisodes(episodeList);
-            linkedHashMap.put(tmpThumbnail.getName(), tmpThumbnail);
         }
-        return linkedHashMap;
     }
 
 
