@@ -1,10 +1,13 @@
 package nl.krakenops.myepisode.view.adapters;
 
+import android.app.FragmentTransaction;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import nl.krakenops.myepisode.controller.ThumbnailController;
 import nl.krakenops.myepisode.view.fragments.AllFrag;
 import nl.krakenops.myepisode.view.fragments.FavFrag;
 import nl.krakenops.myepisode.view.fragments.RecentFrag;
@@ -16,10 +19,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[] { "Recent", "Favorite", "All" };
     private Context context;
+    private ThumbnailController thumbnailController;
 
-    public ViewPagerAdapter(FragmentManager fm, Context context) {
+    public ViewPagerAdapter(FragmentManager fm, Context context, ThumbnailController thumbnailController) {
         super(fm);
         this.context = context;
+        this.thumbnailController = thumbnailController;
     }
 
     @Override
@@ -31,7 +36,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return new RecentFrag();
+                RecentFrag recentFrag = new RecentFrag().newInstance(thumbnailController.getRecentShows());
+                return recentFrag;
             case 1:
                 return new FavFrag();
             case 2:

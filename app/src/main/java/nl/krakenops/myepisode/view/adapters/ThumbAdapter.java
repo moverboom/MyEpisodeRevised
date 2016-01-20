@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
@@ -18,10 +19,10 @@ import nl.krakenops.myepisode.view.activities.ShowDetailActivity;
  * Created by Matthijs on 19/01/2016.
  */
 public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder> {
-    private List<Thumbnail> thumbnailList;
+    private ArrayList<Thumbnail> thumbnailList;
     private Activity activity;
 
-    public ThumbAdapter (List<Thumbnail> thumbnailList, Activity activity) {
+    public ThumbAdapter (ArrayList<Thumbnail> thumbnailList, Activity activity) {
         this.thumbnailList = thumbnailList;
         this.activity = activity;
     }

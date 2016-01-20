@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,25 +20,38 @@ import nl.krakenops.myepisode.model.Thumbnail;
  * Created by Matthijs on 19/01/2016.
  */
 public class RecentFrag extends Fragment {
+    private static final String DESCIBABLE_KEY = "ArrayList<Thumbnail>";
+    private ArrayList<Thumbnail> mList;
     private View mFragmentView;
+
+
+    public static RecentFrag newInstance(ArrayList<Thumbnail> list) {
+        RecentFrag recentFrag = new RecentFrag();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(DESCIBABLE_KEY, list);
+        recentFrag.setArguments(bundle);
+        return recentFrag;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-    //Initialize
-    mFragmentView = inflater.inflate(R.layout.fragment_base, container, false);
+        //Initialize
+        mFragmentView = inflater.inflate(R.layout.fragment_base, container, false);
 
-    //Init Recyclerview with correct XML file
-    RecyclerView mRecyclerView = (RecyclerView) mFragmentView.findViewById(R.id.parentLayoutWatched);
-    GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
-    glm.setOrientation(GridLayoutManager.VERTICAL);
-    mRecyclerView.setLayoutManager(glm);
+        //Init Recyclerview with correct XML file
+        RecyclerView mRecyclerView = (RecyclerView) mFragmentView.findViewById(R.id.parentLayoutWatched);
+        GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
+        glm.setOrientation(GridLayoutManager.VERTICAL);
+        mRecyclerView.setLayoutManager(glm);
 
-    ThumbAdapter thumbAdapter = new ThumbAdapter(createList(15), getActivity());
-    mRecyclerView.setAdapter(thumbAdapter);
-    return mFragmentView;
-}
+        mList = (ArrayList<Thumbnail>) getArguments().getSerializable(DESCIBABLE_KEY);
+
+        ThumbAdapter thumbAdapter = new ThumbAdapter(mList, getActivity());
+        mRecyclerView.setAdapter(thumbAdapter);
+        return mFragmentView;
+    }
 
     private List<Thumbnail> createList(int size) {
         List<Thumbnail> result = new ArrayList<Thumbnail>();

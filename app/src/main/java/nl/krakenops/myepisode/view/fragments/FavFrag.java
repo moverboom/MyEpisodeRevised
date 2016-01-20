@@ -39,8 +39,8 @@ public class FavFrag extends Fragment {
         return mFragmentView;
     }
 
-    private List<Thumbnail> createList(int size) {
-        List<Thumbnail> result = new ArrayList<Thumbnail>();
+    private ArrayList<Thumbnail> createList(int size) {
+        ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
         for (int i = 0; i < size; i++) {
             result.add(new Thumbnail());
         }
