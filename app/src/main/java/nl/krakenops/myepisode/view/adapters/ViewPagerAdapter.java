@@ -1,13 +1,11 @@
 package nl.krakenops.myepisode.view.adapters;
 
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import nl.krakenops.myepisode.controller.ThumbnailController;
+import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.fragments.AllFrag;
 import nl.krakenops.myepisode.view.fragments.FavFrag;
 import nl.krakenops.myepisode.view.fragments.RecentFrag;
@@ -19,12 +17,12 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[] { "Recent", "Favorite", "All" };
     private Context context;
-    private ThumbnailController thumbnailController;
+    private ThumbnailPresenter thumbnailPresenter;
 
-    public ViewPagerAdapter(FragmentManager fm, Context context, ThumbnailController thumbnailController) {
+    public ViewPagerAdapter(FragmentManager fm, Context context, ThumbnailPresenter thumbnailPresenter) {
         super(fm);
         this.context = context;
-        this.thumbnailController = thumbnailController;
+        this.thumbnailPresenter = thumbnailPresenter;
     }
 
     @Override
@@ -36,13 +34,13 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                RecentFrag recentFrag = new RecentFrag().newInstance(thumbnailController.getRecentShows());
+                RecentFrag recentFrag = new RecentFrag().newInstance(thumbnailPresenter);
                 return recentFrag;
             case 1:
-                FavFrag favFrag = new FavFrag().newInstance(thumbnailController.getFavShows());
+                FavFrag favFrag = new FavFrag().newInstance(thumbnailPresenter);
                 return favFrag;
             case 2:
-                AllFrag allFrag = new AllFrag().newInstance(thumbnailController.getAllShows());
+                AllFrag allFrag = new AllFrag().newInstance(thumbnailPresenter);
                 return allFrag;
         }
         return null;

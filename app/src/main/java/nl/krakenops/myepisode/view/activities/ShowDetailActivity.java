@@ -19,7 +19,9 @@ import java.util.Map;
 import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Thumbnail;
+import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
+import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
 
 /**
  * This activity display detailed information about a watched tv show,
@@ -33,6 +35,7 @@ public class ShowDetailActivity extends AppCompatActivity {
     Map<String, List<String>> episodeCollection;
     ExpandableListView expListView;
     private Thumbnail thumbnail;
+    private ThumbnailPresenter thumbnailPresenter;
     private Menu menu;
 
     @Override
@@ -44,6 +47,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         thumbnail = (Thumbnail)getIntent().getSerializableExtra("Thumbnail");
+        thumbnailPresenter = (ThumbnailPresenter)getIntent().getSerializableExtra("ThumbnailPresenter");
         createGroupList();
 
         createCollection();
@@ -52,8 +56,6 @@ public class ShowDetailActivity extends AppCompatActivity {
         final ExpandableListAdapter expListAdapter = new ExpandableListAdapter(
                 this, groupList, episodeCollection);
         expListView.setAdapter(expListAdapter);
-
-        //setGroupIndicatorToRight();
 
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
 
@@ -71,12 +73,6 @@ public class ShowDetailActivity extends AppCompatActivity {
 
     private void createGroupList() {
         groupList = new ArrayList<String>();
-//        groupList.add("1");
-//        groupList.add("2");
-//        groupList.add("3");
-//        groupList.add("4");
-//        groupList.add("5");
-
         Iterator it = thumbnail.getWatchedEpisodes().entrySet().iterator();
         while ( it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
@@ -102,76 +98,17 @@ public class ShowDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void loadChild(String[] episodes) {
-        childList = new ArrayList<String>();
-        for (String episode : episodes)
-            childList.add(episode);
-    }
-
-//    private void createGroupList() {
-//        groupList = new ArrayList<String>();
-//        groupList.add("1");
-//        groupList.add("2");
-//        groupList.add("3");
-//        groupList.add("4");
-//        groupList.add("5");
-//    }
-//
-//    private void createCollection() {
-//        // preparing laptops collection(child)
-//        String[] season1 = { "1", "2", "3" };
-//        String[] season2 = { "1", "2", "3", "4" };
-//        String[] season3 = { "1", "2", "3"  };
-//        String[] season4 = { "1", "2", "3"  };
-//        String[] season5 = { "1", "2", "3"  };
-//
-//        episodeCollection = new LinkedHashMap<String, List<String>>();
-//
-//        for (String laptop : groupList) {
-//            if (laptop.equals("1")) {
-//                loadChild(season1);
-//            } else if (laptop.equals("2"))
-//                loadChild(season2);
-//            else if (laptop.equals("3"))
-//                loadChild(season3);
-//            else if (laptop.equals("4"))
-//                loadChild(season4);
-//            else
-//                loadChild(season5);
-//
-//            episodeCollection.put(laptop, childList);
-//        }
-//    }
-
-
-    private void setGroupIndicatorToRight() {
-        /* Get the screen width */
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        int width = dm.widthPixels;
-
-        expListView.setIndicatorBounds(width - getDipsFromPixel(35), width
-                - getDipsFromPixel(5));
-    }
-
-    // Convert pixel to dip
-    public int getDipsFromPixel(float pixels) {
-        // Get the screen's density scale
-        final float scale = getResources().getDisplayMetrics().density;
-        // Convert the dps to pixels, based on density scale
-        return (int) (pixels * scale + 0.5f);
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         this.menu = menu;
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_show_detail, menu);
+        MenuItem menuItem = menu.findItem(R.id.action_fav_show);
         if (thumbnail.isFavorite()) {
-            menu.getItem(R.id.action_fav_show).setIcon(R.drawable.ic_fav_show_set);
+            menuItem.setIcon(R.drawable.ic_fav_show_set);
         } else {
-            menu.getItem(R.id.action_fav_show).setIcon(R.drawable.ic_fav_show);
+            menuItem.setIcon(R.drawable.ic_fav_show);
         }
         return true;
     }
@@ -191,9 +128,12 @@ public class ShowDetailActivity extends AppCompatActivity {
             if (!thumbnail.isFavorite()) {
                 menuItem.setIcon(R.drawable.ic_fav_show_set);
                 thumbnail.setFavorite(true);
+                thumbnailPresenter.updateThumbnail(thumbnail);
+
             } else {
                 menuItem.setIcon(R.drawable.ic_fav_show);
                 thumbnail.setFavorite(false);
+                thumbnailPresenter.updateThumbnail(thumbnail);
             }
         }
         return super.onOptionsItemSelected(item);

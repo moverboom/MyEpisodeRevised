@@ -1,11 +1,10 @@
-package nl.krakenops.myepisode.controller;
+package nl.krakenops.myepisode.presenter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import nl.krakenops.myepisode.model.Episode;
@@ -14,11 +13,11 @@ import nl.krakenops.myepisode.model.Thumbnail;
 /**
  * Created by Matthijs on 19/01/2016.
  */
-public class ThumbnailController {
+public class ThumbnailPresenter implements Serializable {
     LinkedHashMap<String, Thumbnail> thumbnailHashMap;
     long DAY_IN_MS = 1000 * 60 * 60 * 24;
 
-    public ThumbnailController() {
+    public ThumbnailPresenter() {
         thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
         createDataStub();
     }
@@ -105,6 +104,18 @@ public class ThumbnailController {
                 thumbnailHashMap.put(tmpThumbnail.getName(), tmpThumbnail);
             }
         }
+    }
+
+    public void setFavourite(Thumbnail thumbnail) {
+        if (thumbnailHashMap.containsKey(thumbnail.getName())) {
+            thumbnailHashMap.get(thumbnail.getName()).setFavorite(true);
+        } else {
+            thumbnailHashMap.put(thumbnail.getName(), thumbnail);
+        }
+    }
+
+    public void updateThumbnail(Thumbnail thumbnail) {
+        thumbnailHashMap.put(thumbnail.getName(), thumbnail);
     }
 
 

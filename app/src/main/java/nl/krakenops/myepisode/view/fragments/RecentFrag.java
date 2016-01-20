@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
+import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
 import nl.krakenops.myepisode.model.Thumbnail;
 
@@ -20,15 +21,17 @@ import nl.krakenops.myepisode.model.Thumbnail;
  * Created by Matthijs on 19/01/2016.
  */
 public class RecentFrag extends Fragment {
-    private static final String DESCIBABLE_KEY = "ArrayList<Thumbnail>";
+    private static final String ARRAY_KEY = "ArrayList<Thumbnail>";
+    private static final String PRESENTER_KEY = "ThumbnailPresenter";
     private ArrayList<Thumbnail> mList;
     private View mFragmentView;
+    private ThumbnailPresenter thumbnailPresenter;
 
 
-    public static RecentFrag newInstance(ArrayList<Thumbnail> list) {
+    public static RecentFrag newInstance(ThumbnailPresenter thumbnailPresenter) {
         RecentFrag recentFrag = new RecentFrag();
         Bundle bundle = new Bundle();
-        bundle.putSerializable(DESCIBABLE_KEY, list);
+        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
         recentFrag.setArguments(bundle);
         return recentFrag;
     }
@@ -46,9 +49,10 @@ public class RecentFrag extends Fragment {
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
 
-        mList = (ArrayList<Thumbnail>) getArguments().getSerializable(DESCIBABLE_KEY);
+        mList = (ArrayList<Thumbnail>) getArguments().getSerializable(ARRAY_KEY);
+        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(mList, getActivity());
+        ThumbAdapter thumbAdapter = new ThumbAdapter(thumbnailPresenter.getRecentShows(), getActivity(), thumbnailPresenter);
         mRecyclerView.setAdapter(thumbAdapter);
         return mFragmentView;
     }

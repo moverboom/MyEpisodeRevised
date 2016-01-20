@@ -10,24 +10,24 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import nl.krakenops.myepisode.controller.ThumbnailController;
+import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.activities.AddWatchedAc;
 import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
 import nl.krakenops.myepisode.util.slidingstabs.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity {
-    private ThumbnailController thumbnailController;
+    private ThumbnailPresenter thumbnailPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        thumbnailController = new ThumbnailController(); //Create new ThumbnailController to pass to fragments
+        thumbnailPresenter = new ThumbnailPresenter(); //Create new ThumbnailPresenter to pass to fragments
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
         // Creating The ViewPagerAdapter and Passing Fragment Manager, Titles fot the Tabs and Number Of Tabs.
-        ViewPagerAdapter adapter =  new ViewPagerAdapter(getSupportFragmentManager(), this, thumbnailController);
+        ViewPagerAdapter adapter =  new ViewPagerAdapter(getSupportFragmentManager(), this, thumbnailPresenter);
 
         // Assigning ViewPager View and setting the adapter
         ViewPager pager = (ViewPager) findViewById(R.id.pager);
