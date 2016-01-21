@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.util.Log;
 
 import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.fragments.AllFrag;
@@ -23,6 +24,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         super(fm);
         this.context = context;
         this.thumbnailPresenter = thumbnailPresenter;
+        Log.d("ViewPagerAdapter", "Created new ViewPageAdapter");
     }
 
     @Override

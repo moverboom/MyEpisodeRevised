@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.model.Thumbnail;
@@ -23,14 +25,13 @@ import nl.krakenops.myepisode.view.activities.ShowDetailActivity;
  * Created by Matthijs on 19/01/2016.
  */
 public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder> implements Serializable {
-    private ArrayList<Thumbnail> thumbnailList;
     private Activity activity;
     protected ThumbnailPresenter thumbnailPresenter;
 
-    public ThumbAdapter (ArrayList<Thumbnail> thumbnailList, Activity activity, ThumbnailPresenter thumbnailPresenter) {
-        this.thumbnailList = thumbnailList;
+    public ThumbAdapter (Activity activity, ThumbnailPresenter thumbnailPresenter) {
         this.activity = activity;
         this.thumbnailPresenter = thumbnailPresenter;
+        Log.d("ThumbAdapter", "Created new ThumbAdapter");
     }
 
     @Override
@@ -42,7 +43,7 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
 
     @Override
     public void onBindViewHolder(ThumbHolder holder, int position) {
-        Thumbnail thumbnail = thumbnailList.get(position);
+        Thumbnail thumbnail = thumbnailPresenter.getRecentShows().get(position);
         holder.vThumb.setImageResource(thumbnail.getThumbnailID()); //Get resource from thumbnail
         holder.vThumb.setTag(thumbnail);
         holder.vThumb.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -50,7 +51,7 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
 
     @Override
     public int getItemCount() {
-        return thumbnailList.size();
+        return thumbnailPresenter.getRecentShows().size();
     }
 
     public static class ThumbHolder extends RecyclerView.ViewHolder {
@@ -65,15 +66,11 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
                     bundle.putSerializable("Thumbnail", (Thumbnail) vThumb.getTag());
                     bundle.putSerializable("ThumbnailPresenter", presenter);
                     activity.startActivity(new Intent(activity.getApplicationContext(), ShowDetailActivity.class).putExtras(bundle));
-
                 }
             });
         }
     }
 
-    public void updateData(ArrayList<Thumbnail> thumbnailList) {
-        this.thumbnailList = thumbnailList;
-    }
 
     public void updateThumbnail(Thumbnail thumbnail) {
         thumbnailPresenter.updateThumbnail(thumbnail);

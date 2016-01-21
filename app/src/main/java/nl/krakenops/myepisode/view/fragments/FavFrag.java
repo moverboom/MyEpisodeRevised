@@ -20,9 +20,7 @@ import nl.krakenops.myepisode.model.Thumbnail;
  * Created by Matthijs on 19/01/2016.
  */
 public class FavFrag extends Fragment {
-    private static final String ARRAY_KEY = "ArrayList<Thumbnail>";
     private static final String PRESENTER_KEY = "ThumbnailPresenter";
-    private ArrayList<Thumbnail> mList;
     private View mFragmentView;
     private ThumbnailPresenter thumbnailPresenter;
 
@@ -47,13 +45,18 @@ public class FavFrag extends Fragment {
         GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
-
-        mList = (ArrayList<Thumbnail>) getArguments().getSerializable(ARRAY_KEY);
         thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(thumbnailPresenter.getFavShows(), getActivity(), thumbnailPresenter);
+        ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter);
         mRecyclerView.setAdapter(thumbAdapter);
         return mFragmentView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's state here
+        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
     }
 
     private List<Thumbnail> createList(int size) {

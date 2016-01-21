@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -129,11 +130,13 @@ public class ShowDetailActivity extends AppCompatActivity {
                 menuItem.setIcon(R.drawable.ic_fav_show_set);
                 thumbnail.setFavorite(true);
                 thumbnailPresenter.updateThumbnail(thumbnail);
+                Log.d("ShowDetailActivity", "Updating " + thumbnail.getName() + " to favorite");
 
             } else {
                 menuItem.setIcon(R.drawable.ic_fav_show);
                 thumbnail.setFavorite(false);
                 thumbnailPresenter.updateThumbnail(thumbnail);
+                Log.d("ShowDetailActivity", "Updating " + thumbnail.getName() + " to non-favorite");
             }
         }
         return super.onOptionsItemSelected(item);

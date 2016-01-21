@@ -1,5 +1,8 @@
 package nl.krakenops.myepisode.presenter;
 
+import android.content.Context;
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -7,6 +10,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import nl.krakenops.myepisode.datastorage.SQLiteDBController;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Thumbnail;
 
@@ -16,9 +20,12 @@ import nl.krakenops.myepisode.model.Thumbnail;
 public class ThumbnailPresenter implements Serializable {
     private LinkedHashMap<String, Thumbnail> thumbnailHashMap;
     private long DAY_IN_MS = 1000 * 60 * 60 * 24;
+    private SQLiteDBController sqLiteDBController;
 
-    public ThumbnailPresenter() {
+    public ThumbnailPresenter(Context context) {
         thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
+        this.sqLiteDBController = new SQLiteDBController(context);
+        Log.d("ThumbnailPresenter", "Created new ThumbnailPresenter");
         createDataStub();
     }
 
@@ -116,6 +123,7 @@ public class ThumbnailPresenter implements Serializable {
 
     public void updateThumbnail(Thumbnail thumbnail) {
         thumbnailHashMap.put(thumbnail.getName(), thumbnail);
+        Log.d("ThumbnailPresenter", "Updating " + thumbnail.getName() + " to favorite = " + thumbnail.isFavorite());
     }
 
 

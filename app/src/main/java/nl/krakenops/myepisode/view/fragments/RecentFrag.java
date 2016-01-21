@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +22,7 @@ import nl.krakenops.myepisode.model.Thumbnail;
  * Created by Matthijs on 19/01/2016.
  */
 public class RecentFrag extends Fragment {
-    private static final String ARRAY_KEY = "ArrayList<Thumbnail>";
     private static final String PRESENTER_KEY = "ThumbnailPresenter";
-    private ArrayList<Thumbnail> mList;
     private View mFragmentView;
     private ThumbnailPresenter thumbnailPresenter;
 
@@ -33,6 +32,7 @@ public class RecentFrag extends Fragment {
         Bundle bundle = new Bundle();
         bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
         recentFrag.setArguments(bundle);
+        Log.d("RecentFrag", "Created new RecentFrag instance");
         return recentFrag;
     }
 
@@ -49,12 +49,19 @@ public class RecentFrag extends Fragment {
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
 
-        mList = (ArrayList<Thumbnail>) getArguments().getSerializable(ARRAY_KEY);
         thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(thumbnailPresenter.getRecentShows(), getActivity(), thumbnailPresenter);
+        ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter);
         mRecyclerView.setAdapter(thumbAdapter);
+        Log.d("RecentFrag", "Created new RecentFrag view new ThumbAdapter");
         return mFragmentView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //Save the fragment's state here
+        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
     }
 
     private List<Thumbnail> createList(int size) {
