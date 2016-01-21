@@ -14,8 +14,8 @@ import nl.krakenops.myepisode.model.Thumbnail;
  * Created by Matthijs on 19/01/2016.
  */
 public class ThumbnailPresenter implements Serializable {
-    LinkedHashMap<String, Thumbnail> thumbnailHashMap;
-    long DAY_IN_MS = 1000 * 60 * 60 * 24;
+    private LinkedHashMap<String, Thumbnail> thumbnailHashMap;
+    private long DAY_IN_MS = 1000 * 60 * 60 * 24;
 
     public ThumbnailPresenter() {
         thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
