@@ -47,7 +47,7 @@ public class AllFrag extends Fragment {
         mRecyclerView.setLayoutManager(glm);
         thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter);
+        ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter.getAllShows());
         mRecyclerView.setAdapter(thumbAdapter);
         return mFragmentView;
     }

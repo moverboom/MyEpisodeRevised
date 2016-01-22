@@ -1,6 +1,7 @@
 package nl.krakenops.myepisode.view.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -20,10 +21,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     private Context context;
     private ThumbnailPresenter thumbnailPresenter;
 
-    public ViewPagerAdapter(FragmentManager fm, Context context, ThumbnailPresenter thumbnailPresenter) {
+    public ViewPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
-        this.thumbnailPresenter = thumbnailPresenter;
+        this.thumbnailPresenter = new ThumbnailPresenter(context);
         Log.d("ViewPagerAdapter", "Created new ViewPageAdapter");
     }
 
@@ -53,4 +54,5 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         // Generate title based on item position
         return tabTitles[position];
     }
+
 }

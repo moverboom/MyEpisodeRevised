@@ -48,7 +48,8 @@ public class ShowDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         thumbnail = (Thumbnail)getIntent().getSerializableExtra("Thumbnail");
-        thumbnailPresenter = (ThumbnailPresenter)getIntent().getSerializableExtra("ThumbnailPresenter");
+        //thumbnailPresenter = (ThumbnailPresenter)getIntent().getSerializableExtra("ThumbnailPresenter");
+        this.thumbnailPresenter = new ThumbnailPresenter(getApplicationContext());
         createGroupList();
 
         createCollection();

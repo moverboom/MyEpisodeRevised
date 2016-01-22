@@ -1,6 +1,6 @@
 package nl.krakenops.myepisode;
 
-import android.content.Context;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,27 +12,30 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.activities.AddWatchedAc;
 import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
 import nl.krakenops.myepisode.util.slidingstabs.SlidingTabLayout;
 
 public class MainActivity extends AppCompatActivity {
-    private ThumbnailPresenter thumbnailPresenter;
+    private ViewPager pager;
+    public int fragPosition = 3; //Position of the last fragment, set to 3 because index of fragments ranges 0-2
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        thumbnailPresenter = new ThumbnailPresenter(getApplicationContext()); //Create new ThumbnailPresenter to pass to fragments
+        if (savedInstanceState != null) {
+            fragPosition = savedInstanceState.getInt("fragPosition");
+        }
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
 
         // Creating The ViewPagerAdapter and passing the current FragmentManager, current Activity and Presenter
-        ViewPagerAdapter adapter =  new ViewPagerAdapter(getSupportFragmentManager(), this, thumbnailPresenter);
+        ViewPagerAdapter adapter =  new ViewPagerAdapter(getSupportFragmentManager(), this);
 
         // Assigning ViewPager View and setting the adapter
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager = (ViewPager) findViewById(R.id.pager);
         pager.setAdapter(adapter);
 
         // Assiging the Sliding Tab Layout View
@@ -58,6 +61,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         Log.d("MainActivity", "Created MainActivity");
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt("fragPosition", pager.getCurrentItem());
+        Log.d("MainActivity", " - onSaveInstanceState - Saved instanceState with fragPosition: " + pager.getCurrentItem());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        fragPosition = savedInstanceState.getInt("fragPosition");
+        Log.d("MainActivity", "Recovered savedInstanceState, setting current fragPosition to " + savedInstanceState.getInt("fragPosition"));
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("MainActivity", "fragPosition = " + fragPosition);
+        if (fragPosition != 3) {
+            pager.setCurrentItem(fragPosition);
+        }
     }
 
     @Override

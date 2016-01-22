@@ -26,11 +26,11 @@ import nl.krakenops.myepisode.view.activities.ShowDetailActivity;
  */
 public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder> implements Serializable {
     private Activity activity;
-    protected ThumbnailPresenter thumbnailPresenter;
+    protected List<Thumbnail> thumbnailList;
 
-    public ThumbAdapter (Activity activity, ThumbnailPresenter thumbnailPresenter) {
+    public ThumbAdapter (Activity activity, List<Thumbnail> thumbnailList) {
         this.activity = activity;
-        this.thumbnailPresenter = thumbnailPresenter;
+        this.thumbnailList = thumbnailList;
         Log.d("ThumbAdapter", "Created new ThumbAdapter");
     }
 
@@ -38,12 +38,12 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
     public ThumbHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View thumbnailView = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.cardview_thumbnails, parent, false);
-        return new ThumbHolder(thumbnailView, activity, thumbnailPresenter);
+        return new ThumbHolder(thumbnailView, activity);
     }
 
     @Override
     public void onBindViewHolder(ThumbHolder holder, int position) {
-        Thumbnail thumbnail = thumbnailPresenter.getRecentShows().get(position);
+        Thumbnail thumbnail = thumbnailList.get(position);
         holder.vThumb.setImageResource(thumbnail.getThumbnailID()); //Get resource from thumbnail
         holder.vThumb.setTag(thumbnail);
         holder.vThumb.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -51,12 +51,12 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
 
     @Override
     public int getItemCount() {
-        return thumbnailPresenter.getRecentShows().size();
+        return thumbnailList.size();
     }
 
     public static class ThumbHolder extends RecyclerView.ViewHolder {
         protected ImageView vThumb;
-        public ThumbHolder(View itemView , final Activity activity, final ThumbnailPresenter presenter) {
+        public ThumbHolder(View itemView , final Activity activity) {
             super(itemView);
             vThumb = (ImageView) itemView.findViewById(R.id.thumbnail);
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -64,17 +64,10 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("Thumbnail", (Thumbnail) vThumb.getTag());
-                    bundle.putSerializable("ThumbnailPresenter", presenter);
+                    //bundle.putSerializable("ThumbnailPresenter", presenter);
                     activity.startActivity(new Intent(activity.getApplicationContext(), ShowDetailActivity.class).putExtras(bundle));
                 }
             });
         }
     }
-
-
-    public void updateThumbnail(Thumbnail thumbnail) {
-        thumbnailPresenter.updateThumbnail(thumbnail);
-    }
-
-
 }

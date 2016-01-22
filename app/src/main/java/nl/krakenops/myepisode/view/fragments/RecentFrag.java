@@ -51,7 +51,7 @@ public class RecentFrag extends Fragment {
 
         thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
 
-        ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter);
+        ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter.getRecentShows());
         mRecyclerView.setAdapter(thumbAdapter);
         Log.d("RecentFrag", "Created new RecentFrag view new ThumbAdapter");
         return mFragmentView;
