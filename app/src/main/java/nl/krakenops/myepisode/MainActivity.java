@@ -65,26 +65,25 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putInt("fragPosition", pager.getCurrentItem());
         Log.d("MainActivity", " - onSaveInstanceState - Saved instanceState with fragPosition: " + pager.getCurrentItem());
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
         fragPosition = savedInstanceState.getInt("fragPosition");
         Log.d("MainActivity", "Recovered savedInstanceState, setting current fragPosition to " + savedInstanceState.getInt("fragPosition"));
-
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
     public void onResume() {
-        super.onResume();
         Log.d("MainActivity", "fragPosition = " + fragPosition);
         if (fragPosition != 3) {
             pager.setCurrentItem(fragPosition);
         }
+        super.onResume();
     }
 
     @Override

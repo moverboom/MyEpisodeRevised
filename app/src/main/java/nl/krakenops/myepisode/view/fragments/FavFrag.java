@@ -24,15 +24,6 @@ public class FavFrag extends Fragment {
     private View mFragmentView;
     private ThumbnailPresenter thumbnailPresenter;
 
-
-    public static FavFrag newInstance(ThumbnailPresenter thumbnailPresenter) {
-        FavFrag favFrag = new FavFrag();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
-        favFrag.setArguments(bundle);
-        return favFrag;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +36,7 @@ public class FavFrag extends Fragment {
         GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
-        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
+        thumbnailPresenter = new ThumbnailPresenter(getContext());
 
         ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter.getFavShows());
         mRecyclerView.setAdapter(thumbAdapter);
@@ -54,9 +45,11 @@ public class FavFrag extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
         //Save the fragment's state here
-        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
+        outState.putBundle("Bundle", bundle);
+        super.onSaveInstanceState(outState);
     }
 
     private List<Thumbnail> createList(int size) {

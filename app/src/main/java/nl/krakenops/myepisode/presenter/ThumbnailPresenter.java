@@ -29,7 +29,7 @@ public class ThumbnailPresenter implements Serializable {
         //Using the Factory Pattern to get a ShowDAO for the SQLiteDAO
         this.daoFactory = DAOFactory.getDAOFactory("nl.krakenops.myepisode.datastorage.SQLiteDAOFactory");
         Log.v("ThumbnailPresenter", "Created new ThumbnailPresenter");
-        createDataStub();
+        //createDataStub();
     }
 
     /**

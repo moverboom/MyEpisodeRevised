@@ -19,12 +19,10 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[] { "Recent", "Favorite", "All" };
     private Context context;
-    private ThumbnailPresenter thumbnailPresenter;
 
     public ViewPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
-        this.thumbnailPresenter = new ThumbnailPresenter(context);
         Log.d("ViewPagerAdapter", "Created new ViewPageAdapter");
     }
 
@@ -37,14 +35,11 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                RecentFrag recentFrag = new RecentFrag().newInstance(thumbnailPresenter);
-                return recentFrag;
+                return new RecentFrag();
             case 1:
-                FavFrag favFrag = new FavFrag().newInstance(thumbnailPresenter);
-                return favFrag;
+                return new FavFrag();
             case 2:
-                AllFrag allFrag = new AllFrag().newInstance(thumbnailPresenter);
-                return allFrag;
+                return new AllFrag();
         }
         return null;
     }

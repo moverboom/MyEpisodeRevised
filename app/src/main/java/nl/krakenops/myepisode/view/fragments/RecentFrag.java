@@ -25,16 +25,16 @@ public class RecentFrag extends Fragment {
     private static final String PRESENTER_KEY = "ThumbnailPresenter";
     private View mFragmentView;
     private ThumbnailPresenter thumbnailPresenter;
-
-
-    public static RecentFrag newInstance(ThumbnailPresenter thumbnailPresenter) {
-        RecentFrag recentFrag = new RecentFrag();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
-        recentFrag.setArguments(bundle);
-        Log.d("RecentFrag", "Created new RecentFrag instance");
-        return recentFrag;
-    }
+//
+//
+//    public static RecentFrag newInstance(ThumbnailPresenter thumbnailPresenter) {
+//        RecentFrag recentFrag = new RecentFrag();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
+//        recentFrag.setArguments(bundle);
+//        Log.d("RecentFrag", "Created new RecentFrag instance");
+//        return recentFrag;
+//    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,8 +48,7 @@ public class RecentFrag extends Fragment {
         GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
-
-        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
+        thumbnailPresenter = new ThumbnailPresenter(getContext());
 
         ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter.getRecentShows());
         mRecyclerView.setAdapter(thumbAdapter);
@@ -59,9 +58,11 @@ public class RecentFrag extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
         //Save the fragment's state here
-        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
+        outState.putBundle("Bundle", bundle);
+        super.onSaveInstanceState(outState);
     }
 
     private List<Thumbnail> createList(int size) {

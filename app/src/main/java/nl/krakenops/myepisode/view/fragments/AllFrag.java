@@ -24,15 +24,6 @@ public class AllFrag extends Fragment {
     private View mFragmentView;
     private ThumbnailPresenter thumbnailPresenter;
 
-
-    public static AllFrag newInstance(ThumbnailPresenter thumbnailPresenter) {
-        AllFrag allFrag = new AllFrag();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
-        allFrag.setArguments(bundle);
-        return allFrag;
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,7 +36,7 @@ public class AllFrag extends Fragment {
         GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
-        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
+        thumbnailPresenter = new ThumbnailPresenter(getContext());
 
         ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), thumbnailPresenter.getAllShows());
         mRecyclerView.setAdapter(thumbAdapter);
@@ -54,9 +45,11 @@ public class AllFrag extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(PRESENTER_KEY, thumbnailPresenter);
         //Save the fragment's state here
-        thumbnailPresenter = (ThumbnailPresenter) getArguments().getSerializable(PRESENTER_KEY);
+        outState.putBundle("Bundle", bundle);
+        super.onSaveInstanceState(outState);
     }
 
     private List<Thumbnail> createList(int size) {
