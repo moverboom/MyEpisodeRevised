@@ -9,6 +9,9 @@ import java.util.Map;
 import nl.krakenops.myepisode.R;
 
 /**
+ * This class represents a show.
+ * The name Thumbnail was chosen because the most visible aspect of a show to the user is the thumbnail
+ * A Thumbnail holds all information about a watched show, it also has a reference to the watched episodes
  * Created by Matthijs on 19/01/2016.
  */
 public class Thumbnail implements Serializable {

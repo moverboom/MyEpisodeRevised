@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * This class represents a watched episode.
+ * There is no separate Season class because an episode can be seen as 5.6 where season is 5 and episode is 6.
  * Created by Matthijs on 20/01/2016.
  */
 public class Episode implements Serializable {
     private int season;
     private int episode;
     private Date dateWatched;
+    private int maxEpisodes;
 
     public Episode(int season, int episode) {
         this.season = season;
@@ -26,6 +29,10 @@ public class Episode implements Serializable {
 
     public Date getDateWatched() {
         return dateWatched;
+    }
+
+    public int getMaxEpisodes() {
+        return maxEpisodes;
     }
 
     public void setSeason(int season) {

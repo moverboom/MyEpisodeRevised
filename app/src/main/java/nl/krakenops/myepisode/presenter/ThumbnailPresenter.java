@@ -10,7 +10,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import nl.krakenops.myepisode.datastorage.SQLiteDBController;
+import nl.krakenops.myepisode.datastorage.DAOFactory;
+import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
+import nl.krakenops.myepisode.datastorage.ShowDAOInf;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Thumbnail;
 
@@ -20,12 +22,13 @@ import nl.krakenops.myepisode.model.Thumbnail;
 public class ThumbnailPresenter implements Serializable {
     private LinkedHashMap<String, Thumbnail> thumbnailHashMap;
     private long DAY_IN_MS = 1000 * 60 * 60 * 24;
-    private SQLiteDBController sqLiteDBController;
+    private DAOFactory daoFactory;
 
     public ThumbnailPresenter(Context context) {
         thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
-        this.sqLiteDBController = new SQLiteDBController(context);
-        Log.d("ThumbnailPresenter", "Created new ThumbnailPresenter");
+        //Using the Factory Pattern to get a ShowDAO for the SQLiteDAO
+        this.daoFactory = DAOFactory.getDAOFactory("nl.krakenops.myepisode.datastorage.SQLiteDAOFactory");
+        Log.v("ThumbnailPresenter", "Created new ThumbnailPresenter");
         createDataStub();
     }
 
@@ -36,10 +39,13 @@ public class ThumbnailPresenter implements Serializable {
     public ArrayList<Thumbnail> getAllShows() {
         /*IMPLEMENT DB CONNECTION*/
         ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
-        Iterator it = thumbnailHashMap.entrySet().iterator();
-        while ( it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            result.add((Thumbnail)pair.getValue());
+//        Iterator it = thumbnailHashMap.entrySet().iterator();
+//        while ( it.hasNext()) {
+//            Map.Entry pair = (Map.Entry) it.next();
+//            result.add((Thumbnail)pair.getValue());
+//        }
+        if (daoFactory.getShowDAO().getAllShows() != null) {
+            result = daoFactory.getShowDAO().getAllShows();
         }
         return result;
     }
@@ -53,12 +59,15 @@ public class ThumbnailPresenter implements Serializable {
         /*IMPLEMENT DB CONNECTION + DATE CHECK*/
         ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
 //        Iterator it = thumbnailHashMap.entrySet().iterator();
-        Iterator it = thumbnailHashMap.entrySet().iterator();
-        while ( it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if (((Thumbnail)pair.getValue()).getLastWatched().after(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)))) {
-                result.add((Thumbnail)pair.getValue());
-            }
+//        Iterator it = thumbnailHashMap.entrySet().iterator();
+//        while ( it.hasNext()) {
+//            Map.Entry pair = (Map.Entry) it.next();
+//            if (((Thumbnail)pair.getValue()).getLastWatched().after(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)))) {
+//                result.add((Thumbnail)pair.getValue());
+//            }
+//        }
+        if (daoFactory.getShowDAO().getRecentShows() != null) {
+            result = daoFactory.getShowDAO().getRecentShows();
         }
         return result;
     }
@@ -71,12 +80,15 @@ public class ThumbnailPresenter implements Serializable {
     public ArrayList<Thumbnail> getFavShows() {
         /*IMPLEMENT CHECK FOR FAVORITE*/
         ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
-        Iterator it = thumbnailHashMap.entrySet().iterator();
-        while ( it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if (((Thumbnail)pair.getValue()).isFavorite()) {
-                result.add((Thumbnail) pair.getValue());
-            }
+//        Iterator it = thumbnailHashMap.entrySet().iterator();
+//        while ( it.hasNext()) {
+//            Map.Entry pair = (Map.Entry) it.next();
+//            if (((Thumbnail)pair.getValue()).isFavorite()) {
+//                result.add((Thumbnail) pair.getValue());
+//            }
+//        }
+        if (daoFactory.getShowDAO().getFavShows() != null) {
+            result = daoFactory.getShowDAO().getFavShows();
         }
         return result;
     }
