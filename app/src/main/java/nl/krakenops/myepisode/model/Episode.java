@@ -5,22 +5,14 @@ import java.util.Date;
 
 /**
  * This class represents a watched episode.
- * There is no separate Season class because an episode can be seen as 5.6 where season is 5 and episode is 6.
  * Created by Matthijs on 20/01/2016.
  */
 public class Episode implements Serializable {
-    private int season;
     private int episode;
     private Date dateWatched;
-    private int maxEpisodes;
 
-    public Episode(int season, int episode) {
-        this.season = season;
+    public Episode(int episode) {
         this.episode = episode;
-    }
-
-    public int getSeason() {
-        return season;
     }
 
     public int getEpisode() {
@@ -29,14 +21,6 @@ public class Episode implements Serializable {
 
     public Date getDateWatched() {
         return dateWatched;
-    }
-
-    public int getMaxEpisodes() {
-        return maxEpisodes;
-    }
-
-    public void setSeason(int season) {
-        this.season = season;
     }
 
     public void setEpisode(int episode) {
@@ -54,15 +38,15 @@ public class Episode implements Serializable {
 
         Episode episode1 = (Episode) o;
 
-        if (getSeason() != episode1.getSeason()) return false;
-        return getEpisode() == episode1.getEpisode();
+        if (getEpisode() != episode1.getEpisode()) return false;
+        return !(getDateWatched() != null ? !getDateWatched().equals(episode1.getDateWatched()) : episode1.getDateWatched() != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = getSeason();
-        result = 31 * result + getEpisode();
+        int result = getEpisode();
+        result = 31 * result + (getDateWatched() != null ? getDateWatched().hashCode() : 0);
         return result;
     }
 }

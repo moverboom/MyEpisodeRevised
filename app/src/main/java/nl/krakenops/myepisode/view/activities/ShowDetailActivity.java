@@ -19,6 +19,7 @@ import java.util.Map;
 
 import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.model.Episode;
+import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Thumbnail;
 import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
@@ -73,29 +74,29 @@ public class ShowDetailActivity extends AppCompatActivity {
         });
     }
 
+    //Creates an ArrayList of all seasons
     private void createGroupList() {
         groupList = new ArrayList<String>();
-        Iterator it = thumbnail.getWatchedEpisodes().entrySet().iterator();
-        while ( it.hasNext()) {
+        Iterator it = thumbnail.getSeasons().entrySet().iterator();
+        while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
-            Episode tmpEpisode = (Episode) pair.getValue();
-            groupList.add(String.valueOf(tmpEpisode.getSeason()));
+            Season tmpSeason = (Season) pair.getValue();
+            groupList.add(String.valueOf(tmpSeason.getSeason()));
         }
     }
 
+    //Maps seasons to episodes
     private void createCollection() {
         episodeCollection = new LinkedHashMap<String, List<String>>();
 
-        Iterator it = thumbnail.getWatchedEpisodes().entrySet().iterator();
-        while ( it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if (episodeCollection.containsKey((String)pair.getKey())) {
-                episodeCollection.get((String)pair.getKey()).add((String)pair.getValue());
-            } else {
-                List<String> episodeList = new ArrayList<String>();
-                String episode = String.valueOf(((Episode)pair.getValue()).getEpisode());
-                episodeList.add(episode);
-                episodeCollection.put((String) pair.getKey(), episodeList);
+        Iterator it = thumbnail.getSeasons().entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            List<String> episodes = new ArrayList<String>();
+            Season tmpSeason = (Season)pair.getValue();
+            episodeCollection.put(String.valueOf(tmpSeason.getSeason()), episodes);
+            for (Episode episode : tmpSeason.getEpisodesAsArrayList()) {
+                episodeCollection.get(String.valueOf(tmpSeason.getSeason())).add(String.valueOf(episode.getEpisode()));
             }
         }
     }

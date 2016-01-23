@@ -1,6 +1,7 @@
 package nl.krakenops.myepisode.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -19,10 +20,10 @@ public class Thumbnail implements Serializable {
     private int thumbnail = R.drawable.chuck;
     private boolean isFavorite = false;
     private Date lastWatched = new Date(); //Instantiate new Date
-    private LinkedHashMap<String, Episode> watchedEpisodes; //Key = SeasonNumber    Value = Episode object
+    private LinkedHashMap<Integer, Season> seasons; //Key = SeasonNumber    Value = Season object
 
     public Thumbnail() {
-        watchedEpisodes = new LinkedHashMap<String, Episode>();
+        seasons = new LinkedHashMap<Integer, Season>();
     }
 
     public int getThumbnailID() {
@@ -37,21 +38,31 @@ public class Thumbnail implements Serializable {
         return isFavorite;
     }
 
-    public LinkedHashMap<String, Episode> getWatchedEpisodes() {
-        return watchedEpisodes;
+    public LinkedHashMap<Integer, Season> getSeasons() {
+        return seasons;
+    }
+
+    public ArrayList<Season> getSeasonsAsArrayList() {
+        ArrayList<Season> result = new ArrayList<Season>();
+        Iterator it = seasons.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            result.add((Season)pair.getValue());
+        }
+        return result;
     }
 
     public void setFavorite(boolean favorite) {
         this.isFavorite = favorite;
     }
 
-    public void setWatchedEpisodes(LinkedHashMap<String, Episode> watched) {
-        Iterator it = watched.entrySet().iterator();
-        while ( it.hasNext()) {
-            Map.Entry pair = (Map.Entry) it.next();
-            if (!watchedEpisodes.containsValue(pair.getValue())) {
-                watchedEpisodes.put((String)pair.getKey(), (Episode)pair.getValue());
-            }
+    public void addEpisode(Episode episode, int season) {
+        if (seasons.containsKey(season)) {
+            seasons.get(season).addEpisode(episode);
+        } else {
+            Season tmpSeason = new Season(season);
+            tmpSeason.addEpisode(episode);
+            seasons.put(tmpSeason.getSeason(), tmpSeason);
         }
     }
 
