@@ -12,6 +12,13 @@ import nl.krakenops.myepisode.model.Show;
 public interface ShowDAOInf {
 
     /**
+     * Checks if the datastorage contains the show for the given name
+     * @param name name of the show to check
+     * @return true is show exists
+     */
+    boolean containsShow(String name);
+
+    /**
      * Inserts a new show into the database using a Thumbnail.
      * A Thumbnail holds all information needed.
      * If a show is already present, this method will update the existing show.
@@ -78,12 +85,19 @@ public interface ShowDAOInf {
     boolean updateShowEpisodesById(int id, Episode episode);
 
     /**
-     * Updated the episodes watched for a show using a given name
+     * Updates the episodes watched for a show using a given name
      * @param name name of the show to set
      * @param episode Episode to set as Episode
      * @return true is success
      */
     boolean updateShowEpisodeByName(String name, Episode episode);
+
+    /**
+     * Updates all information about a show.
+     * @param show the show to update as Show
+     * @return true if success
+     */
+    boolean updateShow(Show show);
 
     /**
      * Removes an episode from a show using the given show id

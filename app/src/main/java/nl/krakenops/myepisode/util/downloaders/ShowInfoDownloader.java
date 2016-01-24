@@ -36,7 +36,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
     protected Boolean doInBackground(Void... params) {
         boolean result = false;
         try {
-            TmdbApi api = new TmdbApi("361e460bdf4209b48c8db9b6ad0ea321");
+            TmdbApi api = new TmdbApi("secret");
             TvResultsPage searchTv = api.getSearch().searchTv(show.getName(), "en", 0);
             if (searchTv.getResults().size() > 0) {
                 String thumbnailPath = searchTv.getResults().get(0).getPosterPath();

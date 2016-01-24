@@ -52,6 +52,28 @@ public class Show implements Serializable {
         return result;
     }
 
+    public Season getSeason(int season) {
+        Season result = null;
+        if (seasons.containsKey(season)) {
+            result = seasons.get(season);
+        }
+        return result;
+    }
+
+    public Season getLastSeason() {
+        Season result = null;
+        int seasonNumber = 0;
+        Iterator it = seasons.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            if ((int)pair.getKey() > seasonNumber) {
+                seasonNumber = (int)pair.getKey();
+            }
+            result = getSeason(seasonNumber);
+        }
+        return result;
+    }
+
     public void setFavorite(boolean favorite) {
         this.isFavorite = favorite;
     }

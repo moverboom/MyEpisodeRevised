@@ -2,13 +2,16 @@ package nl.krakenops.myepisode.datastorage;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 
 import java.io.Serializable;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
 
 /**
  * Created by Matthijs on 22/01/2016.
@@ -30,22 +33,37 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
     }
 
     @Override
+    public boolean containsShow(String name) {
+        boolean result = false;
+        SQLiteStatement statement = db.compileStatement("SELECT COUNT(*) FROM "+dbHelper.TABLE_SHOWS+" WHERE "+dbHelper.COL_NAME+" = ?;");
+        statement.bindString(1, name);
+        long amount = statement.simpleQueryForLong();
+        if (amount > 0) {
+            result = true;
+        }
+        return result;
+    }
+
+    @Override
     public boolean insertShow(Show show) {
         boolean result = false;
-        //Creating ContentValue pairs
-//        ContentValues values = new ContentValues();
-//        values.put(dbHelper.COL_NAME, thumbnail.getName());
-//
-//        // Inserting Row
-//        db.insert(dbHelper.TABLE_SHOWS, null, values);
-//        db.close();
 
         //First store user submitted data in database
-
+        SQLiteStatement statement = db.compileStatement("INSERT INTO "+dbHelper.TABLE_SHOWS+
+                "("+dbHelper.COL_NAME+", "
+                    +dbHelper.COL_LASTWATCHED+") VALUES (?, ?);");
+        statement.bindString(1, show.getName());
+        statement.bindString(2, show.getLastWatched().toString());
+        statement.execute();
 
         //Retrieve additional information from TMDB API in AsyncTask
         //The AsyncTask updates the earlier submitted information
+        ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(dbHelper.getContext(), show, db);
+        showInfoDownloader.execute();
 
+        if (containsShow(show.getName())) {
+            result = true;
+        }
         return result;
     }
 
@@ -91,6 +109,11 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
 
     @Override
     public boolean updateShowEpisodeByName(String name, Episode episode) {
+        return false;
+    }
+
+    @Override
+    public boolean updateShow(Show show) {
         return false;
     }
 

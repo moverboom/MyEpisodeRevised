@@ -10,9 +10,10 @@ import java.io.Serializable;
  * Created by Matthijs on 24/01/2016.
  */
 public class SQLiteDAOHelper extends SQLiteOpenHelper implements Serializable {
+    private Context context;
     //Static constants which will be used throughout the class.
     //Database vars
-    public static final String DATABASE_NAME = "MyEpisodeShows";
+    protected static final String DATABASE_NAME = "MyEpisodeShows";
     protected static final int DATABASE_VERSION = 1;
 
     //Tables
@@ -41,6 +42,7 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper implements Serializable {
 
     public SQLiteDAOHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     @Override
@@ -89,5 +91,9 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper implements Serializable {
         db.execSQL(query);
         onCreate(db);
         db.close();
+    }
+
+    public Context getContext() {
+        return context;
     }
 }
