@@ -16,7 +16,9 @@ import java.net.URL;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
+import info.movito.themoviedbapi.model.tv.TvSeason;
 import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
+import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 
 /**
@@ -78,6 +80,17 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                     String filePath = file.getPath();
                     show.setThumbnailPath(filePath);
                     result = true;
+                }
+                searchTv.getResults().get(0).getSeasons().get(0).getEpisodes().get(0);
+
+                /*
+                * Retrieve all seasons. Each season has a list with episodes.
+                * For each season, a backdrop is also downloaded.
+                * This backdrop is displayed in the ShowDetailActivity.
+                * */
+                for (TvSeason season : searchTv.getResults().get(0).getSeasons()) {
+                    Season tmpSeason = new Season(season.getSeasonNumber());
+
                 }
 
             }
