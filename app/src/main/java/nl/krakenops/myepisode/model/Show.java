@@ -101,6 +101,16 @@ public class Show implements Serializable {
         this.id = id;
     }
 
+    public void addSeason(Season season) {
+        if (!seasons.containsValue(season.getSeason())) {
+            seasons.put(season.getSeason(), season);
+        } else {
+            if (!seasons.get(season.getSeason()).equals(season)) {
+                seasons.put(season.getSeason(), season);
+            }
+        }
+    }
+
     public void setLastWatched(Date date) {
         this.lastWatched = date;
     }

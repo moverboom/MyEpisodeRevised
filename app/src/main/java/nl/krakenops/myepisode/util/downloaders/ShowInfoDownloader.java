@@ -13,11 +13,15 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Date;
+import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
+import info.movito.themoviedbapi.model.tv.TvEpisode;
 import info.movito.themoviedbapi.model.tv.TvSeason;
 import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
+import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 
@@ -83,16 +87,36 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                 }
                 searchTv.getResults().get(0).getSeasons().get(0).getEpisodes().get(0);
 
+                //Store the submitted episode number in a variable.
+                //At this point, only one episode is submitted.
+                int episodeNumber = 0;
+                for (Season s : show.getSeasonsAsArrayList()) {
+                    for (Episode e : s.getEpisodesAsArrayList()) {
+                        episodeNumber = e.getEpisode();
+                    }
+                }
+
                 /*
                 * Retrieve all seasons. Each season has a list with episodes.
                 * For each season, a backdrop is also downloaded.
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
-                for (TvSeason season : searchTv.getResults().get(0).getSeasons()) {
-                    Season tmpSeason = new Season(season.getSeasonNumber());
-
+                List<TvSeason> seasonList = searchTv.getResults().get(0).getSeasons();
+                for (int i = 0; i < seasonList.size(); i++) { //i iterates season list
+                    Season tmpSeason = new Season(seasonList.get(i).getSeasonNumber());
+                    for (int j = 0; j < seasonList.get(i).getEpisodes().size(); j++) { //j iterates episode list
+                        TvEpisode tvEpisode = seasonList.get(i).getEpisodes().get(j);
+                        Episode episode = new Episode(tvEpisode.getEpisodeNumber());
+                        if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
+                            episode.setDateWatched(new Date());
+                        }
+                        tmpSeason.addEpisode(episode);
+                    }
+                    tmpSeason.setMaxEpisodes(seasonList.get(i).getEpisodes().size());
+                    tmpSeason.setLastWatched(new Date());
+                    show.addSeason(tmpSeason);
                 }
-
+                db.updateShow(show);
             }
 
 

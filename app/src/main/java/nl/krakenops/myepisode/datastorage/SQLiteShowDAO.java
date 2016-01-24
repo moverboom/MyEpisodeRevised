@@ -64,6 +64,7 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
             }
             //Retrieve additional information from TMDB API in AsyncTask
             //The AsyncTask updates the earlier submitted information
+            //It calls methods from this class when it has new data
             ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(dbHelper.getContext(), show, this);
             showInfoDownloader.execute();
             result = true;
@@ -121,6 +122,11 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
         return false;
     }
 
+    /**
+     * Updates all information related to a show with respect to watched episodes
+     * @param show the show to update as Show
+     * @return
+     */
     @Override
     public boolean updateShow(Show show) {
         return false;

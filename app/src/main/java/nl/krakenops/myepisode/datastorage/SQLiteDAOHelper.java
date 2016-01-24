@@ -75,7 +75,7 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper implements Serializable {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EPISODE +
                 "(" + COL_ID + " INTEGER primary key autoincrement, " +
                 COL_EPISODE + "INTEGER NOT NULL, " +
-                COL_WATCHEDAT + "TIMESTAMP DEFAULT CURRENT_TIMESTAMP" +
+                COL_WATCHEDAT + "TIMESTAMP" +
                 COL_FKSEASONID + "INTEGER NOT NULL, " +
                 "FOREIGN KEY(" + COL_FKSEASONID + ") REFERENCES " + TABLE_SEASON + "(" + COL_ID + "));");
     }
