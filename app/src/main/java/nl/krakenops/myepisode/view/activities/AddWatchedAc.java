@@ -69,7 +69,7 @@ public class AddWatchedAc extends AppCompatActivity{
             }
             if(notFilled == 0) { //if all fields are filled correct
                 HashMap queryValues = new HashMap<String, String>(); //HashMap for input data
-                queryValues.put("TVShow", showNameEditText.getText().toString()); //Adding data to HashMap and escaping
+                queryValues.put("Show", showNameEditText.getText().toString()); //Adding data to HashMap and escaping
                 queryValues.put("Season", seasonEditText.getText().toString());
                 queryValues.put("Episode", episodeEditText.getText().toString());
 

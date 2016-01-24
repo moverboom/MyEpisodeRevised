@@ -23,7 +23,7 @@ gen/
 # Local configuration file (sdk path, etc)
 local.properties
 
-# Windows thumbnail db
+# Windows thumb db
 Thumbs.db
 
 # OSX files

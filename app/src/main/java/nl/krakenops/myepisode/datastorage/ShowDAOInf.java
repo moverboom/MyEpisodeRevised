@@ -1,10 +1,9 @@
 package nl.krakenops.myepisode.datastorage;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import nl.krakenops.myepisode.model.Episode;
-import nl.krakenops.myepisode.model.Thumbnail;
+import nl.krakenops.myepisode.model.Show;
 
 /**
  * Interface which defines methodes to be implemented by every DAO
@@ -16,43 +15,43 @@ public interface ShowDAOInf {
      * Inserts a new show into the database using a Thumbnail.
      * A Thumbnail holds all information needed.
      * If a show is already present, this method will update the existing show.
-     * @param thumbnail Thumbnail to use for show data
+     * @param show Thumbnail to use for show data
      * @return true if success
      */
-    boolean insertShow(Thumbnail thumbnail);
+    boolean insertShow(Show show);
 
     /**
      * Returns a List with all recently watched shows as as Thumbnail
      * Recently = 7 days ago or less
      * @return List with Thumbnails
      */
-    ArrayList<Thumbnail> getRecentShows();
+    ArrayList<Show> getRecentShows();
 
     /**
      * Returns a List with all favorite shows as as Thumbnail
      * @return List with Thumbnails
      */
-    ArrayList<Thumbnail> getFavShows();
+    ArrayList<Show> getFavShows();
 
     /**
      * Returns a List with all watched shows as as Thumbnail
      * @return List with Thumbnails
      */
-    ArrayList<Thumbnail> getAllShows();
+    ArrayList<Show> getAllShows();
 
     /**
      * Returns a show as Thumbnail for a given id
      * @param id ID of the show to find
      * @return show as Thumbnail
      */
-    Thumbnail getShowByID(int id);
+    Show getShowByID(int id);
 
     /**
      * Return a show as a Thumbnail for a given name
      * @param  name name of the show to find
      * @return show as Thumbnail
      */
-    Thumbnail getShowByName(String name);
+    Show getShowByName(String name);
 
     /**
      * Sets whether a show is a favorite or not using a given id

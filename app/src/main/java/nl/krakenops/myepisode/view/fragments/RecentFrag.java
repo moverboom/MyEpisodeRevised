@@ -9,14 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
+import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
-import nl.krakenops.myepisode.model.Thumbnail;
 
 /**
  * Created by Matthijs on 19/01/2016.
@@ -65,10 +64,10 @@ public class RecentFrag extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    private List<Thumbnail> createList(int size) {
-        List<Thumbnail> result = new ArrayList<Thumbnail>();
+    private List<Show> createList(int size) {
+        List<Show> result = new ArrayList<Show>();
         for (int i = 0; i < size; i++) {
-            result.add(new Thumbnail());
+            result.add(new Show());
         }
         return result;
     }

@@ -1,18 +1,14 @@
 package nl.krakenops.myepisode.datastorage;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteException;
-import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
 import nl.krakenops.myepisode.model.Episode;
-import nl.krakenops.myepisode.model.Thumbnail;
+import nl.krakenops.myepisode.model.Show;
 
 /**
  * Created by Matthijs on 22/01/2016.
@@ -34,7 +30,7 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
     }
 
     @Override
-    public boolean insertShow(Thumbnail thumbnail) {
+    public boolean insertShow(Show show) {
         boolean result = false;
         //Creating ContentValue pairs
 //        ContentValues values = new ContentValues();
@@ -49,27 +45,27 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
     }
 
     @Override
-    public ArrayList<Thumbnail> getRecentShows() {
+    public ArrayList<Show> getRecentShows() {
         return null;
     }
 
     @Override
-    public ArrayList<Thumbnail> getFavShows() {
+    public ArrayList<Show> getFavShows() {
         return null;
     }
 
     @Override
-    public ArrayList<Thumbnail> getAllShows() {
+    public ArrayList<Show> getAllShows() {
         return null;
     }
 
     @Override
-    public Thumbnail getShowByID(int id) {
+    public Show getShowByID(int id) {
         return null;
     }
 
     @Override
-    public Thumbnail getShowByName(String name) {
+    public Show getShowByName(String name) {
         return null;
     }
 

@@ -3,7 +3,6 @@ package nl.krakenops.myepisode.view.activities;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +19,9 @@ import java.util.Map;
 import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
-import nl.krakenops.myepisode.model.Thumbnail;
+import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
-import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
 
 /**
  * This activity display detailed information about a watched tv show,
@@ -36,7 +34,7 @@ public class ShowDetailActivity extends AppCompatActivity {
     List<String> childList; //Episodes
     Map<String, List<String>> episodeCollection;
     ExpandableListView expListView;
-    private Thumbnail thumbnail;
+    private Show show;
     private ThumbnailPresenter thumbnailPresenter;
     private Menu menu;
 
@@ -48,7 +46,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        thumbnail = (Thumbnail)getIntent().getSerializableExtra("Thumbnail");
+        show = (Show)getIntent().getSerializableExtra("Thumbnail");
         //thumbnailPresenter = (ThumbnailPresenter)getIntent().getSerializableExtra("ThumbnailPresenter");
         this.thumbnailPresenter = new ThumbnailPresenter(getApplicationContext());
         createGroupList();
@@ -77,7 +75,7 @@ public class ShowDetailActivity extends AppCompatActivity {
     //Creates an ArrayList of all seasons
     private void createGroupList() {
         groupList = new ArrayList<String>();
-        Iterator it = thumbnail.getSeasons().entrySet().iterator();
+        Iterator it = show.getSeasons().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry) it.next();
             Season tmpSeason = (Season) pair.getValue();
@@ -89,7 +87,7 @@ public class ShowDetailActivity extends AppCompatActivity {
     private void createCollection() {
         episodeCollection = new LinkedHashMap<String, List<String>>();
 
-        Iterator it = thumbnail.getSeasons().entrySet().iterator();
+        Iterator it = show.getSeasons().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry pair = (Map.Entry)it.next();
             List<String> episodes = new ArrayList<String>();
@@ -108,7 +106,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_show_detail, menu);
         MenuItem menuItem = menu.findItem(R.id.action_fav_show);
-        if (thumbnail.isFavorite()) {
+        if (show.isFavorite()) {
             menuItem.setIcon(R.drawable.ic_fav_show_set);
         } else {
             menuItem.setIcon(R.drawable.ic_fav_show);
@@ -128,17 +126,17 @@ public class ShowDetailActivity extends AppCompatActivity {
             return true;
         } else if (id == R.id.action_fav_show) {
             MenuItem menuItem = menu.findItem(R.id.action_fav_show);
-            if (!thumbnail.isFavorite()) {
+            if (!show.isFavorite()) {
                 menuItem.setIcon(R.drawable.ic_fav_show_set);
-                thumbnail.setFavorite(true);
-                thumbnailPresenter.updateThumbnail(thumbnail);
-                Log.d("ShowDetailActivity", "Updating " + thumbnail.getName() + " to favorite");
+                show.setFavorite(true);
+                thumbnailPresenter.updateThumbnail(show);
+                Log.d("ShowDetailActivity", "Updating " + show.getName() + " to favorite");
 
             } else {
                 menuItem.setIcon(R.drawable.ic_fav_show);
-                thumbnail.setFavorite(false);
-                thumbnailPresenter.updateThumbnail(thumbnail);
-                Log.d("ShowDetailActivity", "Updating " + thumbnail.getName() + " to non-favorite");
+                show.setFavorite(false);
+                thumbnailPresenter.updateThumbnail(show);
+                Log.d("ShowDetailActivity", "Updating " + show.getName() + " to non-favorite");
             }
         }
         return super.onOptionsItemSelected(item);

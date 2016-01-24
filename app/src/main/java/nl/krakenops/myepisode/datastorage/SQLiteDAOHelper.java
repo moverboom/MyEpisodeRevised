@@ -1,13 +1,10 @@
 package nl.krakenops.myepisode.datastorage;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.io.Serializable;
-
-import nl.krakenops.myepisode.model.Thumbnail;
 
 /**
  * Created by Matthijs on 24/01/2016.

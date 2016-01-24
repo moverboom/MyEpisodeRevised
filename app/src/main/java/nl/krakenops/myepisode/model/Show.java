@@ -10,19 +10,18 @@ import java.util.Map;
 import nl.krakenops.myepisode.R;
 
 /**
- * This class represents a show.
- * The name Thumbnail was chosen because the most visible aspect of a show to the user is the thumbnail
- * A Thumbnail holds all information about a watched show, it also has a reference to the watched episodes
+ * This class represents a TV Show.
+ *
  * Created by Matthijs on 19/01/2016.
  */
-public class Thumbnail implements Serializable {
+public class Show implements Serializable {
     private String name;
     private int thumbnail = R.drawable.chuck;
     private boolean isFavorite = false;
     private Date lastWatched = new Date(); //Instantiate new Date
     private LinkedHashMap<Integer, Season> seasons; //Key = SeasonNumber    Value = Season object
 
-    public Thumbnail() {
+    public Show() {
         seasons = new LinkedHashMap<Integer, Season>();
     }
 

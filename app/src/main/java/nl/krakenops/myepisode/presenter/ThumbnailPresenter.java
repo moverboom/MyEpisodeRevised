@@ -5,27 +5,21 @@ import android.util.Log;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import nl.krakenops.myepisode.datastorage.DAOFactory;
-import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
-import nl.krakenops.myepisode.datastorage.ShowDAOInf;
-import nl.krakenops.myepisode.model.Episode;
-import nl.krakenops.myepisode.model.Thumbnail;
+import nl.krakenops.myepisode.model.Show;
 
 /**
  * Created by Matthijs on 19/01/2016.
  */
 public class ThumbnailPresenter implements Serializable {
-    private LinkedHashMap<String, Thumbnail> thumbnailHashMap;
+    private LinkedHashMap<String, Show> thumbnailHashMap;
     private long DAY_IN_MS = 1000 * 60 * 60 * 24;
     private DAOFactory daoFactory;
 
     public ThumbnailPresenter(Context context) {
-        thumbnailHashMap = new LinkedHashMap<String, Thumbnail>();
+        thumbnailHashMap = new LinkedHashMap<String, Show>();
         //Using the Factory Pattern to get a ShowDAO for the SQLiteDAO
         this.daoFactory = DAOFactory.getDAOFactory("nl.krakenops.myepisode.datastorage.SQLiteDAOFactory");
         Log.v("ThumbnailPresenter", "Created new ThumbnailPresenter");
@@ -36,9 +30,9 @@ public class ThumbnailPresenter implements Serializable {
      * Returns a List with all shows as Thumbnail.
      * @return List with Thumbnails
      */
-    public ArrayList<Thumbnail> getAllShows() {
+    public ArrayList<Show> getAllShows() {
         /*IMPLEMENT DB CONNECTION*/
-        ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
+        ArrayList<Show> result = new ArrayList<Show>();
 //        Iterator it = thumbnailHashMap.entrySet().iterator();
 //        while ( it.hasNext()) {
 //            Map.Entry pair = (Map.Entry) it.next();
@@ -55,9 +49,9 @@ public class ThumbnailPresenter implements Serializable {
      * Recently = 7 days ago or less
      * @return List with Thumbnails
      */
-    public ArrayList<Thumbnail> getRecentShows() {
+    public ArrayList<Show> getRecentShows() {
         /*IMPLEMENT DB CONNECTION + DATE CHECK*/
-        ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
+        ArrayList<Show> result = new ArrayList<Show>();
 //        Iterator it = thumbnailHashMap.entrySet().iterator();
 //        Iterator it = thumbnailHashMap.entrySet().iterator();
 //        while ( it.hasNext()) {
@@ -77,9 +71,9 @@ public class ThumbnailPresenter implements Serializable {
      *
      * @return List with Thumbnails
      */
-    public ArrayList<Thumbnail> getFavShows() {
+    public ArrayList<Show> getFavShows() {
         /*IMPLEMENT CHECK FOR FAVORITE*/
-        ArrayList<Thumbnail> result = new ArrayList<Thumbnail>();
+        ArrayList<Show> result = new ArrayList<Show>();
 //        Iterator it = thumbnailHashMap.entrySet().iterator();
 //        while ( it.hasNext()) {
 //            Map.Entry pair = (Map.Entry) it.next();
@@ -125,17 +119,17 @@ public class ThumbnailPresenter implements Serializable {
 //        }
 //    }
 
-    public void setFavourite(Thumbnail thumbnail) {
-        if (thumbnailHashMap.containsKey(thumbnail.getName())) {
-            thumbnailHashMap.get(thumbnail.getName()).setFavorite(true);
+    public void setFavourite(Show show) {
+        if (thumbnailHashMap.containsKey(show.getName())) {
+            thumbnailHashMap.get(show.getName()).setFavorite(true);
         } else {
-            thumbnailHashMap.put(thumbnail.getName(), thumbnail);
+            thumbnailHashMap.put(show.getName(), show);
         }
     }
 
-    public void updateThumbnail(Thumbnail thumbnail) {
-        thumbnailHashMap.put(thumbnail.getName(), thumbnail);
-        Log.d("ThumbnailPresenter", "Updating " + thumbnail.getName() + " to favorite = " + thumbnail.isFavorite());
+    public void updateThumbnail(Show show) {
+        thumbnailHashMap.put(show.getName(), show);
+        Log.d("ThumbnailPresenter", "Updating " + show.getName() + " to favorite = " + show.isFavorite());
     }
 
 
