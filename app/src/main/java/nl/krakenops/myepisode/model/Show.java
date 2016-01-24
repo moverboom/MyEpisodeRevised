@@ -17,6 +17,7 @@ import nl.krakenops.myepisode.R;
 public class Show implements Serializable {
     private String name;
     private int thumbnail = R.drawable.chuck;
+    private String thumbnailPath = null;
     private boolean isFavorite = false;
     private Date lastWatched = new Date(); //Instantiate new Date
     private LinkedHashMap<Integer, Season> seasons; //Key = SeasonNumber    Value = Season object
@@ -69,6 +70,10 @@ public class Show implements Serializable {
         return lastWatched;
     }
 
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
     public void setLastWatched(Date date) {
         this.lastWatched = date;
     }
@@ -79,5 +84,9 @@ public class Show implements Serializable {
 
     public void setThumbnail(int thumbnail) {
         this.thumbnail = thumbnail;
+    }
+
+    public void setThumbnailPath(String thumbnailPath) {
+        this.thumbnailPath = thumbnailPath;
     }
 }

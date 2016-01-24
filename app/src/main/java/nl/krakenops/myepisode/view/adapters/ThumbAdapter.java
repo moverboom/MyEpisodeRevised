@@ -2,6 +2,8 @@ package nl.krakenops.myepisode.view.adapters;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -10,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 
@@ -40,7 +43,17 @@ public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder>
     @Override
     public void onBindViewHolder(ThumbHolder holder, int position) {
         Show show = showList.get(position);
-        holder.vThumb.setImageResource(show.getThumbnailID()); //Get resource from thumbnail
+        if (show.getThumbnailPath() == null) {
+            holder.vThumb.setImageResource(R.drawable.placeholder);
+        } else {
+            File tmpFile = new File(show.getThumbnailPath());
+            if (tmpFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(tmpFile.getAbsolutePath());
+                holder.vThumb.setImageBitmap(bitmap);
+            } else {
+                holder.vThumb.setImageResource(R.drawable.placeholder);
+            }
+        }
         holder.vThumb.setTag(show);
         holder.vThumb.setScaleType(ImageView.ScaleType.FIT_XY);
     }

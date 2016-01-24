@@ -42,6 +42,7 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
 
         //First store user submitted data in database
 
+
         //Retrieve additional information from TMDB API in AsyncTask
         //The AsyncTask updates the earlier submitted information
 

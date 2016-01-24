@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import info.movito.themoviedbapi.TmdbApi;
@@ -57,9 +58,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                     tmpFile = context.getCacheDir(); //Create file on phone
                 }
                 File file = new File(tmpFile, show.getName());
-                if (file.createNewFile()) {
-                    file.createNewFile();
-                }
+                file.createNewFile();
 
                 //Create file
                 FileOutputStream fos = new FileOutputStream(file);
@@ -67,10 +66,24 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                 int totalSize = urlConnection.getContentLength();
                 int downloadedSize = 0;
                 byte[] buffer = new byte[1024];
+                int bufferLength = 0;
+                while ((bufferLength = input.read(buffer)) > 0) {
+                    fos.write(buffer, 0, bufferLength);
+                    downloadedSize += bufferLength;
+                    Log.i("Progress:","downloadedSize:"+downloadedSize+"totalSize:"+ totalSize) ;
+                }
+                fos.close();
+                if (downloadedSize == totalSize) {
+                    String filePath = file.getPath();
+                    show.setThumbnailPath(filePath);
+                    result = true;
+                }
 
             }
+        } catch (MalformedURLException mE) {
+            mE.printStackTrace();
         } catch (IOException iE) {
-
+            iE.printStackTrace();
         }
         return result;
     }
