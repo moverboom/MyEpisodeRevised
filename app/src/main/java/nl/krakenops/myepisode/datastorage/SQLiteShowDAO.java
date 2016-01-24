@@ -40,6 +40,10 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
 //        db.insert(dbHelper.TABLE_SHOWS, null, values);
 //        db.close();
 
+        //First store user submitted data in database
+
+        //Retrieve additional information from TMDB API in AsyncTask
+        //The AsyncTask updates the earlier submitted information
 
         return result;
     }
