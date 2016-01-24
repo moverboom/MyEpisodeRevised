@@ -1,6 +1,7 @@
 package nl.krakenops.myepisode.datastorage;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 
@@ -55,11 +56,19 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
         statement.bindString(1, show.getName());
         statement.bindString(2, show.getLastWatched().toString());
         statement.execute();
+        if (containsShow(show.getName())) {
+            String query = "SELECT "+dbHelper.COL_ID+" FROM "+dbHelper.TABLE_SHOWS+" WHERE "+dbHelper.COL_NAME+" = ?;";
+            Cursor c = db.rawQuery(query, new String[]{show.getName()});
+            if (c.moveToFirst()) {
+                show.setId(c.getInt(0));
+            }
+            //Retrieve additional information from TMDB API in AsyncTask
+            //The AsyncTask updates the earlier submitted information
+            ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(dbHelper.getContext(), show, this);
+            showInfoDownloader.execute();
+            result = true;
+        }
 
-        //Retrieve additional information from TMDB API in AsyncTask
-        //The AsyncTask updates the earlier submitted information
-        ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(dbHelper.getContext(), show, db);
-        showInfoDownloader.execute();
 
         if (containsShow(show.getName())) {
             result = true;

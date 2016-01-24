@@ -16,6 +16,7 @@ import java.net.URL;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
+import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
 import nl.krakenops.myepisode.model.Show;
 
 /**
@@ -24,9 +25,9 @@ import nl.krakenops.myepisode.model.Show;
 public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
     private Context context;
     private Show show;
-    private SQLiteDatabase db;
+    private SQLiteShowDAO db;
 
-    public ShowInfoDownloader(Context context, Show show, SQLiteDatabase db) {
+    public ShowInfoDownloader(Context context, Show show, SQLiteShowDAO db) {
         this.context = context;
         this.show = show;
         this.db = db;
@@ -80,6 +81,8 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                 }
 
             }
+
+
         } catch (MalformedURLException mE) {
             mE.printStackTrace();
         } catch (IOException iE) {
