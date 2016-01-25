@@ -6,24 +6,34 @@ import android.util.Log;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Observable;
 
 import nl.krakenops.myepisode.datastorage.DAOFactory;
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
+import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
 
 /**
  * Created by Matthijs on 19/01/2016.
  */
-public class ThumbnailPresenter implements Serializable {
+public class ShowPresenter implements Serializable {
     private LinkedHashMap<String, Show> showList;
     private long DAY_IN_MS = 1000 * 60 * 60 * 24;
     private DAOFactory daoFactory;
+    private ViewPagerAdapter view = null;
+    private Context context;
 
-    public ThumbnailPresenter(Context context) {
+    public ShowPresenter(Context context) {
         showList = new LinkedHashMap<String, Show>();
+        this.context = context;
         //Using the Factory Pattern to get a ShowDAO for the SQLiteDAO
         this.daoFactory = DAOFactory.getDAOFactory("nl.krakenops.myepisode.datastorage.SQLiteDAOFactory");
         Log.v("ThumbnailPresenter", "Created new ThumbnailPresenter");
         //createDataStub();
+    }
+
+    public void setUIRef(ViewPagerAdapter view) {
+        this.view = view;
     }
 
     /**
@@ -31,8 +41,10 @@ public class ThumbnailPresenter implements Serializable {
      * @param show Show to insert
      * @return true if success
      */
-    public boolean insertShow(Show show) {
-        return daoFactory.getShowDAO().insertShow(show);
+    public void insertShow(Show show) {
+        daoFactory.getShowDAO().insertShow(show);
+        ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, show, this);
+        showInfoDownloader.execute();
     }
 
     /**
@@ -75,11 +87,21 @@ public class ThumbnailPresenter implements Serializable {
         }
         return result;
     }
-    
+
     public void updateShow(Show show) {
         if (daoFactory.getShowDAO().updateShow(show)) {
             showList.put(show.getName(), show);
         }
         Log.d("ThumbnailPresenter", "Updating " + show.getName() + " to favorite = " + show.isFavorite());
+    }
+
+    /**
+     * Updates the ViewPagerAdapter after the AsyncTask finishes downloading all the data.
+     * @param show Show for which data was downloaded. Is returned by the AsyncTask.
+     */
+    public void updateUI(Show show) {
+        updateShow(show);
+        view.notifyDataSetChanged();
+        showList.put(show.getName(), show);
     }
 }

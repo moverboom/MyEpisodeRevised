@@ -20,7 +20,7 @@ import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
-import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
+import nl.krakenops.myepisode.presenter.ShowPresenter;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
 
 /**
@@ -31,11 +31,10 @@ import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
 
 public class ShowDetailActivity extends AppCompatActivity {
     List<String> groupList; //Seasons
-    List<String> childList; //Episodes
     Map<String, List<String>> episodeCollection;
     ExpandableListView expListView;
     private Show show;
-    private ThumbnailPresenter thumbnailPresenter;
+    private ShowPresenter showPresenter;
     private Menu menu;
 
     @Override
@@ -48,7 +47,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         show = (Show)getIntent().getSerializableExtra("Thumbnail");
         //thumbnailPresenter = (ThumbnailPresenter)getIntent().getSerializableExtra("ThumbnailPresenter");
-        this.thumbnailPresenter = new ThumbnailPresenter(getApplicationContext());
+        this.showPresenter = new ShowPresenter(getApplicationContext());
         createGroupList();
 
         createCollection();
@@ -129,13 +128,13 @@ public class ShowDetailActivity extends AppCompatActivity {
             if (!show.isFavorite()) {
                 menuItem.setIcon(R.drawable.ic_fav_show_set);
                 show.setFavorite(true);
-                thumbnailPresenter.updateShow(show);
+                showPresenter.updateShow(show);
                 Log.d("ShowDetailActivity", "Updating " + show.getName() + " to favorite");
 
             } else {
                 menuItem.setIcon(R.drawable.ic_fav_show);
                 show.setFavorite(false);
-                thumbnailPresenter.updateShow(show);
+                showPresenter.updateShow(show);
                 Log.d("ShowDetailActivity", "Updating " + show.getName() + " to non-favorite");
             }
         }

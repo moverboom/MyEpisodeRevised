@@ -63,9 +63,14 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
         return result;
     }
 
+    /**
+     * This method updates a Show using the information from the given Show object as argument.
+     * It returns the same show object, but with the ID set.
+     * @param show Thumbnail to use for show data
+     * @return
+     */
     @Override
-    public boolean insertShow(Show show) {
-        boolean result = false;
+    public Show insertShow(Show show) {
         //First store user submitted data in database
         SQLiteStatement statement = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SHOWS +
                 "(" + dbHelper.COL_NAME + ", "
@@ -74,21 +79,10 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
         statement.bindString(2, show.getLastWatched().toString());
         long insertID = statement.executeInsert();
         if (containsShow(show.getName())) {
-//           String query = "SELECT "+dbHelper.COL_ID+" FROM "+dbHelper.TABLE_SHOWS+" WHERE "+dbHelper.COL_NAME+" = ?;";
-//           Cursor c = db.rawQuery(query, new String[]{show.getName()});
-//           if (c.moveToFirst()) {
-//               show.setId(c.getInt(0));
-//           }
             Log.i(this.getClass().getName(), String.valueOf(insertID));
             show.setId(insertID);
-            //Retrieve additional information from TMDB API in AsyncTask
-            //The AsyncTask updates the earlier submitted information
-            //It calls methods from this class when it has new data
-            ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(dbHelper.getContext(), show, this);
-            showInfoDownloader.execute();
-            result = true;
         }
-        return result;
+        return show;
     }
 
     @Override

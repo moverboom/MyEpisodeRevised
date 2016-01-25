@@ -1,6 +1,7 @@
 package nl.krakenops.myepisode.datastorage;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Show;
@@ -25,7 +26,7 @@ public interface ShowDAOInf {
      * @param show Thumbnail to use for show data
      * @return true if success
      */
-    boolean insertShow(Show show);
+    Show insertShow(Show show);
 
     /**
      * Returns a List with all recently watched shows as as Thumbnail

@@ -25,6 +25,7 @@ import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.presenter.ShowPresenter;
 
 /**
  * This class extends AsyncTask and downloads all show information needed.
@@ -32,22 +33,22 @@ import nl.krakenops.myepisode.model.Show;
  * Once this class finishes downloading everything, it updates the show.
  * Created by Matthijs on 24/01/2016.
  */
-public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
+public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
     private Context context;
     private Show show;
-    private SQLiteShowDAO db;
+    private ShowPresenter showPresenter;
     private static final String THUMBNAIL = "thumbnail";
     private static final String BACKDROP = "backdrop";
 
-    public ShowInfoDownloader(Context context, Show show, SQLiteShowDAO db) {
+    public ShowInfoDownloader(Context context, Show show, ShowPresenter showPresenter) {
         this.context = context;
         this.show = show;
-        this.db = db;
+        this.showPresenter = showPresenter;
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
-        boolean result = false;
+    protected Show doInBackground(Void... params) {
+        Show result = null;
         try {
             TmdbApi api = new TmdbApi("secret");
             TvResultsPage searchTv = api.getSearch().searchTv(show.getName(), "en", 0);
@@ -91,13 +92,11 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                     tmpSeason.setLastWatched(new Date());
                     show.addSeason(tmpSeason);
                 }
-                db.open();
-                result = db.updateShow(show);
             }
-        } catch (IOException | SQLException iE) {
+        } catch (IOException iE) {
             iE.printStackTrace();
         }
-        return result;
+        return show;
     }
 
     /**
@@ -146,5 +145,11 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
             throw new IOException(iE.getMessage());
         }
         return result;
+    }
+
+    @Override
+    protected void onPostExecute(Show result) {
+        super.onPostExecute(result);
+        showPresenter.updateUI(result);
     }
 }
