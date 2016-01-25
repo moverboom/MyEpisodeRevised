@@ -51,25 +51,25 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper implements Serializable {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_THUMBNAIL +
                 "("+COL_ID+" INTEGER primary key autoincrement, " + COL_THUMBNAILPATH + "VARCHAR NOT NULL);");
 
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_BACKDROP +
+                "("+COL_ID+" INTEGER primary key autoincrement, " +
+                COL_BACKDROPPATH + "VARCHAR);");
+
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SHOWS +
                 "("+COL_ID+" INTEGER primary key autoincrement, " +
                 COL_NAME + "VARCHAR NOT NULL, " +
                 COL_LASTWATCHED + "TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 COL_NEXTEPISODEAIRS + "TIMESTAMP, " +
                 COL_FKTHUMBNAILID + "INTEGER," +
-                "FOREIGN KEY("+COL_FKTHUMBNAILID+") REFERENCES "+TABLE_THUMBNAIL+"("+COL_ID+"));");
-
-        db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_BACKDROP +
-                "("+COL_ID+" INTEGER primary key autoincrement, " +
-                COL_BACKDROPPATH + "VARCHAR);");
+                COL_FKBACKDROPID + "INTEGER, " +
+                "FOREIGN KEY("+COL_FKTHUMBNAILID+") REFERENCES "+TABLE_THUMBNAIL+"("+COL_ID+")" +
+                "FOREIGN KEY("+COL_FKBACKDROPID+") REFERENCES "+TABLE_BACKDROP+"("+COL_ID+"));");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SEASON +
                 "(" + COL_ID + " INTEGER primary key autoincrement, " +
                 COL_SEASON + "INTEGER NOT NULL, " +
                 COL_MAXEPISODES + "INTEGER, " +
-                COL_FKBACKDROPID + "INTEGER, " +
                 COL_FKSHOWID + "INTEGER, " +
-                "FOREIGN KEY(" + COL_FKBACKDROPID + ") REFERENCES " + TABLE_BACKDROP + "(" + COL_ID + ")" +
                 "FOREIGN KEY(" + COL_FKSHOWID + ") REFERENCES shows(" + COL_ID + "));");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EPISODE +

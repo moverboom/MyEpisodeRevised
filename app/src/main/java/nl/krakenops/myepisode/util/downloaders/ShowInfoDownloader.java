@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -90,11 +91,10 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                     tmpSeason.setLastWatched(new Date());
                     show.addSeason(tmpSeason);
                 }
+                db.open();
                 result = db.updateShow(show);
             }
-        } catch (MalformedURLException mE) {
-            mE.printStackTrace();
-        } catch (IOException iE) {
+        } catch (IOException | SQLException iE) {
             iE.printStackTrace();
         }
         return result;

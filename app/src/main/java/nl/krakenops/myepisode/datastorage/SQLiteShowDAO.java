@@ -1,9 +1,11 @@
 package nl.krakenops.myepisode.datastorage;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.io.Serializable;
 import java.sql.PreparedStatement;
@@ -25,10 +27,26 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
         dbHelper = new SQLiteDAOHelper(context);
     }
 
+    /**
+     * Opens a writable database
+     * @throws SQLException
+     */
     public void open() throws SQLException {
         db = dbHelper.getWritableDatabase();
     }
 
+    /**
+     * Opens a readable database
+     * @throws SQLException
+     */
+    public void openReadable() throws SQLException {
+        db = dbHelper.getReadableDatabase();
+    }
+
+    /**
+     * Closes the current database connection
+     * Must be called when operation is complete
+     */
     public void close() {
         dbHelper.close();
     }
@@ -48,23 +66,21 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
     @Override
     public boolean insertShow(Show show) {
         boolean result = false;
-
         //First store user submitted data in database
-        SQLiteStatement statement = db.compileStatement("INSERT INTO "+dbHelper.TABLE_SHOWS+
-                "("+dbHelper.COL_NAME+", "
-                    +dbHelper.COL_LASTWATCHED+") VALUES (?, ?);");
+        SQLiteStatement statement = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SHOWS +
+                "(" + dbHelper.COL_NAME + ", "
+                + dbHelper.COL_LASTWATCHED + ") VALUES (?, ?);");
         statement.bindString(1, show.getName());
         statement.bindString(2, show.getLastWatched().toString());
         long insertID = statement.executeInsert();
         if (containsShow(show.getName())) {
-//            String query = "SELECT "+dbHelper.COL_ID+" FROM "+dbHelper.TABLE_SHOWS+" WHERE "+dbHelper.COL_NAME+" = ?;";
-//            Cursor c = db.rawQuery(query, new String[]{show.getName()});
-//            if (c.moveToFirst()) {
-//                show.setId(c.getInt(0));
-//            }
-
+//           String query = "SELECT "+dbHelper.COL_ID+" FROM "+dbHelper.TABLE_SHOWS+" WHERE "+dbHelper.COL_NAME+" = ?;";
+//           Cursor c = db.rawQuery(query, new String[]{show.getName()});
+//           if (c.moveToFirst()) {
+//               show.setId(c.getInt(0));
+//           }
+            Log.i(this.getClass().getName(), String.valueOf(insertID));
             show.setId(insertID);
-
             //Retrieve additional information from TMDB API in AsyncTask
             //The AsyncTask updates the earlier submitted information
             //It calls methods from this class when it has new data
@@ -72,16 +88,12 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
             showInfoDownloader.execute();
             result = true;
         }
-
-
-        if (containsShow(show.getName())) {
-            result = true;
-        }
         return result;
     }
 
     @Override
     public ArrayList<Show> getRecentShows() {
+        db = dbHelper.getReadableDatabase();
         return null;
     }
 
@@ -126,12 +138,16 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
     }
 
     /**
-     * Updates all information related to a show with respect to watched episodes
+     * Updates all information related to a show.
+     * Should only be used when the show is inserted for the first time.
      * @param show the show to update as Show
-     * @return
+     * @return true if success
      */
     @Override
     public boolean updateShow(Show show) {
+        //First insert thumbnail and backdrop
+        //Then set refs in Shows
+        
         return false;
     }
 
