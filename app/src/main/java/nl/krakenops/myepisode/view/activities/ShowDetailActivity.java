@@ -129,13 +129,13 @@ public class ShowDetailActivity extends AppCompatActivity {
             if (!show.isFavorite()) {
                 menuItem.setIcon(R.drawable.ic_fav_show_set);
                 show.setFavorite(true);
-                thumbnailPresenter.updateThumbnail(show);
+                thumbnailPresenter.updateShow(show);
                 Log.d("ShowDetailActivity", "Updating " + show.getName() + " to favorite");
 
             } else {
                 menuItem.setIcon(R.drawable.ic_fav_show);
                 show.setFavorite(false);
-                thumbnailPresenter.updateThumbnail(show);
+                thumbnailPresenter.updateShow(show);
                 Log.d("ShowDetailActivity", "Updating " + show.getName() + " to non-favorite");
             }
         }
