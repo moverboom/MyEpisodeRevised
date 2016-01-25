@@ -13,7 +13,6 @@ public class Season {
     private int season;
     private Date lastWatched;
     private int maxEpisodes;
-    private String backdropPath;
     private LinkedHashMap<Integer, Episode> episodes;
 
     public Season(int season) {
@@ -31,10 +30,6 @@ public class Season {
 
     public int getMaxEpisodes() {
         return maxEpisodes;
-    }
-
-    public String getBackdropPath() {
-        return backdropPath;
     }
 
     public LinkedHashMap<Integer, Episode> getEpisodes() {
@@ -63,10 +58,6 @@ public class Season {
         this.maxEpisodes = maxEpisodes;
     }
 
-    public void setBackdropPath(String backdropPath) {
-        this.backdropPath = backdropPath;
-    }
-
     public void addEpisode(Episode episode) {
         if (episodes.containsKey(episode.getEpisode())) {
             if (!episodes.get(episode.getEpisode()).equals(episode)) {
@@ -88,8 +79,6 @@ public class Season {
         if (getMaxEpisodes() != season1.getMaxEpisodes()) return false;
         if (getLastWatched() != null ? !getLastWatched().equals(season1.getLastWatched()) : season1.getLastWatched() != null)
             return false;
-        if (getBackdropPath() != null ? !getBackdropPath().equals(season1.getBackdropPath()) : season1.getBackdropPath() != null)
-            return false;
         return !(getEpisodes() != null ? !getEpisodes().equals(season1.getEpisodes()) : season1.getEpisodes() != null);
 
     }
@@ -99,7 +88,6 @@ public class Season {
         int result = getSeason();
         result = 31 * result + (getLastWatched() != null ? getLastWatched().hashCode() : 0);
         result = 31 * result + getMaxEpisodes();
-        result = 31 * result + (getBackdropPath() != null ? getBackdropPath().hashCode() : 0);
         result = 31 * result + (getEpisodes() != null ? getEpisodes().hashCode() : 0);
         return result;
     }

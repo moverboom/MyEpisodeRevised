@@ -15,10 +15,11 @@ import nl.krakenops.myepisode.R;
  * Created by Matthijs on 19/01/2016.
  */
 public class Show implements Serializable {
-    private int id;
+    private long id;
     private String name;
     private int thumbnail = R.drawable.chuck;
-    private String thumbnailPath = null;
+    private String thumbnailPath = null; //A thumbnail is shown in the fragments
+    private String backdropPath = null; //A backdrop is shown in the ShowDetailActivity
     private boolean isFavorite = false;
     private Date lastWatched = new Date(); //Instantiate new Date
     private LinkedHashMap<Integer, Season> seasons; //Key = SeasonNumber    Value = Season object
@@ -27,7 +28,7 @@ public class Show implements Serializable {
         seasons = new LinkedHashMap<Integer, Season>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -75,6 +76,18 @@ public class Show implements Serializable {
         return result;
     }
 
+    public Date getLastWatched() {
+        return lastWatched;
+    }
+
+    public String getThumbnailPath() {
+        return thumbnailPath;
+    }
+
+    public String getBackdropPath() {
+        return backdropPath;
+    }
+
     public void setFavorite(boolean favorite) {
         this.isFavorite = favorite;
     }
@@ -89,15 +102,7 @@ public class Show implements Serializable {
         }
     }
 
-    public Date getLastWatched() {
-        return lastWatched;
-    }
-
-    public String getThumbnailPath() {
-        return thumbnailPath;
-    }
-
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -125,5 +130,9 @@ public class Show implements Serializable {
 
     public void setThumbnailPath(String thumbnailPath) {
         this.thumbnailPath = thumbnailPath;
+    }
+
+    public void setBackdropPath(String backdropPath) {
+        this.backdropPath = backdropPath;
     }
 }

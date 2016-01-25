@@ -26,12 +26,17 @@ import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 
 /**
+ * This class extends AsyncTask and downloads all show information needed.
+ * It runs in the background on a different thread and placeholders are used where needed.
+ * Once this class finishes downloading everything, it updates the show.
  * Created by Matthijs on 24/01/2016.
  */
 public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
     private Context context;
     private Show show;
     private SQLiteShowDAO db;
+    private static final String THUMBNAIL = "thumbnail";
+    private static final String BACKDROP = "backdrop";
 
     public ShowInfoDownloader(Context context, Show show, SQLiteShowDAO db) {
         this.context = context;
@@ -50,42 +55,12 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                 URL thumbnailUrl = new URL(api.getConfiguration().getBaseUrl() + api.getConfiguration().getPosterSizes().get(3) + thumbnailPath);
                 Log.d(this.getClass().getName(), "thumbnail URL " + thumbnailUrl);
 
-                //Now that we have the URL, we can download it
-                //Create connection
-                HttpURLConnection urlConnection = (HttpURLConnection) thumbnailUrl.openConnection();
-                urlConnection.setRequestMethod("GET");
-                urlConnection.setDoOutput(true);
-                urlConnection.connect();
-
-                //Set file
-                File tmpFile;
-                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-                    tmpFile = context.getExternalCacheDir(); //Create file on SD
-                } else {
-                    tmpFile = context.getCacheDir(); //Create file on phone
-                }
-                File file = new File(tmpFile, show.getName());
-                file.createNewFile();
-
-                //Create file
-                FileOutputStream fos = new FileOutputStream(file);
-                InputStream input = urlConnection.getInputStream();
-                int totalSize = urlConnection.getContentLength();
-                int downloadedSize = 0;
-                byte[] buffer = new byte[1024];
-                int bufferLength = 0;
-                while ((bufferLength = input.read(buffer)) > 0) {
-                    fos.write(buffer, 0, bufferLength);
-                    downloadedSize += bufferLength;
-                    Log.i("Progress:","downloadedSize:"+downloadedSize+"totalSize:"+ totalSize) ;
-                }
-                fos.close();
-                if (downloadedSize == totalSize) {
-                    String filePath = file.getPath();
-                    show.setThumbnailPath(filePath);
-                    result = true;
-                }
-                searchTv.getResults().get(0).getSeasons().get(0).getEpisodes().get(0);
+                //Now that we have the URL, we can download the thumbnail and set it
+                show.setThumbnailPath(downloadImage(thumbnailUrl, THUMBNAIL));
+                //Backdrop follows
+                String backdropPath = searchTv.getResults().get(0).getBackdropPath();
+                URL backdropUrl = new URL(api.getConfiguration().getBaseUrl() + api.getConfiguration().getBackdropSizes().get(0) + backdropPath);
+                show.setBackdropPath(downloadImage(backdropUrl, BACKDROP));
 
                 //Store the submitted episode number in a variable.
                 //At this point, only one episode is submitted.
@@ -98,7 +73,6 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
 
                 /*
                 * Retrieve all seasons. Each season has a list with episodes.
-                * For each season, a backdrop is also downloaded.
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
                 List<TvSeason> seasonList = searchTv.getResults().get(0).getSeasons();
@@ -116,14 +90,60 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                     tmpSeason.setLastWatched(new Date());
                     show.addSeason(tmpSeason);
                 }
-                db.updateShow(show);
+                result = db.updateShow(show);
             }
-
-
         } catch (MalformedURLException mE) {
             mE.printStackTrace();
         } catch (IOException iE) {
             iE.printStackTrace();
+        }
+        return result;
+    }
+
+    /**
+     * Downloads an image using a given URL and concats the imagekind to the filename.
+     * @param thumbnailUrl URL to download from
+     * @param imageKind Thumbnail or Backdrop. This will be concatenated to the filename
+     * @return filepath as String
+     * @throws IOException
+     */
+    private String downloadImage(URL thumbnailUrl, String imageKind) throws IOException{
+        String result = null;
+        try {
+            //Create connection
+            HttpURLConnection urlConnection = (HttpURLConnection) thumbnailUrl.openConnection();
+            urlConnection.setRequestMethod("GET");
+            urlConnection.setDoOutput(true);
+            urlConnection.connect();
+
+            //Set file
+            File tmpFile;
+            if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                tmpFile = context.getExternalCacheDir(); //Create file on SD
+            } else {
+                tmpFile = context.getCacheDir(); //Create file on phone
+            }
+            File file = new File(tmpFile, show.getName() + imageKind);
+            file.createNewFile();
+
+            //Create file
+            FileOutputStream fos = new FileOutputStream(file);
+            InputStream input = urlConnection.getInputStream();
+            int totalSize = urlConnection.getContentLength();
+            int downloadedSize = 0;
+            byte[] buffer = new byte[1024];
+            int bufferLength = 0;
+            while ((bufferLength = input.read(buffer)) > 0) {
+                fos.write(buffer, 0, bufferLength);
+                downloadedSize += bufferLength;
+                Log.i("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
+            }
+            fos.close();
+            if (downloadedSize == totalSize) {
+                result = file.getPath();
+            }
+        } catch (IOException iE) {
+            throw new IOException(iE.getMessage());
         }
         return result;
     }
