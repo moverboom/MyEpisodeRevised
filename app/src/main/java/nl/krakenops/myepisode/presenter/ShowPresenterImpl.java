@@ -9,7 +9,7 @@ import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
 /**
  * Created by Matthijs on 19/01/2016.
  */
-public class ShowPresenterImpl extends ShowPresenter {
+public class ShowPresenterImpl extends ShowPresenterAbstract {
     //Android specific variables
     private Context context;
     private ViewPagerAdapter view = null;

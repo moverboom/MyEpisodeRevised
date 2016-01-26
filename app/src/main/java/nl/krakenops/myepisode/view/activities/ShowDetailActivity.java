@@ -21,6 +21,7 @@ import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
+import nl.krakenops.myepisode.presenter.ShowPresenterAbstract;
 import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
 
