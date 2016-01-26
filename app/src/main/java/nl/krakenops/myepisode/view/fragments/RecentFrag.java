@@ -9,21 +9,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 import nl.krakenops.myepisode.R;
-import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
+import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
 
 /**
  * Created by Matthijs on 19/01/2016.
  */
 public class RecentFrag extends Fragment {
-    private static final String PRESENTER_KEY = "ThumbnailPresenter";
+    private static final String PRESENTER_KEY = "ShowPresenter";
     private View mFragmentView;
     private ShowPresenter showPresenter;
 
@@ -39,7 +34,7 @@ public class RecentFrag extends Fragment {
         GridLayoutManager glm = new GridLayoutManager(getActivity().getApplicationContext(), 3);
         glm.setOrientation(GridLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(glm);
-        showPresenter = new ShowPresenter(getContext());
+        showPresenter = new ShowPresenterImpl(getContext());
 
         ThumbAdapter thumbAdapter = new ThumbAdapter(getActivity(), showPresenter.getRecentShows());
         mRecyclerView.setAdapter(thumbAdapter);
@@ -49,10 +44,6 @@ public class RecentFrag extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        Bundle bundle = new Bundle();
-        bundle.putSerializable(PRESENTER_KEY, (ShowPresenter)showPresenter);
-        //Save the fragment's state here
-        outState.putBundle("Bundle", bundle);
         super.onSaveInstanceState(outState);
     }
 }

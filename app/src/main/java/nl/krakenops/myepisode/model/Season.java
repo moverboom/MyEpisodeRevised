@@ -1,5 +1,6 @@
 package nl.krakenops.myepisode.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,7 +10,7 @@ import java.util.Map;
 /**
  * Created by Matthijs on 23/01/2016.
  */
-public class Season {
+public class Season implements Serializable {
     private int season;
     private Date lastWatched;
     private int maxEpisodes;

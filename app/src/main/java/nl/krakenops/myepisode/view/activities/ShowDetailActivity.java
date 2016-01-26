@@ -21,6 +21,7 @@ import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
+import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
 
 /**
@@ -47,7 +48,7 @@ public class ShowDetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         show = (Show)getIntent().getSerializableExtra("Thumbnail");
         //thumbnailPresenter = (ThumbnailPresenter)getIntent().getSerializableExtra("ThumbnailPresenter");
-        this.showPresenter = new ShowPresenter(getApplicationContext());
+        this.showPresenter = new ShowPresenterImpl(getApplicationContext());
         createGroupList();
 
         createCollection();

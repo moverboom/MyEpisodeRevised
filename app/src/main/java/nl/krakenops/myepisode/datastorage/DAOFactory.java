@@ -7,7 +7,7 @@ import java.io.Serializable;
 /**
  * Created by Matthijs on 22/01/2016.
  */
-public abstract class DAOFactory implements Serializable {
+public abstract class DAOFactory {
 
     /**
      * This method creates an isntance of the specified factory class

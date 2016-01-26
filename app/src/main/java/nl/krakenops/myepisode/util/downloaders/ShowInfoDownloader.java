@@ -1,7 +1,6 @@
 package nl.krakenops.myepisode.util.downloaders;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -11,9 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -21,11 +18,10 @@ import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
 import info.movito.themoviedbapi.model.tv.TvEpisode;
 import info.movito.themoviedbapi.model.tv.TvSeason;
-import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
-import nl.krakenops.myepisode.presenter.ShowPresenter;
+import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 
 /**
  * This class extends AsyncTask and downloads all show information needed.
@@ -36,11 +32,11 @@ import nl.krakenops.myepisode.presenter.ShowPresenter;
 public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
     private Context context;
     private Show show;
-    private ShowPresenter showPresenter;
+    private ShowPresenterImpl showPresenter;
     private static final String THUMBNAIL = "thumbnail";
     private static final String BACKDROP = "backdrop";
 
-    public ShowInfoDownloader(Context context, Show show, ShowPresenter showPresenter) {
+    public ShowInfoDownloader(Context context, Show show, ShowPresenterImpl showPresenter) {
         this.context = context;
         this.show = show;
         this.showPresenter = showPresenter;

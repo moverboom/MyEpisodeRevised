@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by Matthijs on 24/01/2016.
  */
-public class SQLiteDAOHelper extends SQLiteOpenHelper implements Serializable {
+public class SQLiteDAOHelper extends SQLiteOpenHelper {
     private Context context;
     //Static constants which will be used throughout the class.
     //Database vars

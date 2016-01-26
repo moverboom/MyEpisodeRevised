@@ -19,11 +19,13 @@ import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
 /**
  * Created by Matthijs on 22/01/2016.
  */
-public class SQLiteShowDAO implements Serializable, ShowDAOInf {
+public class SQLiteShowDAO implements ShowDAOInf {
     private SQLiteDatabase db;
     private SQLiteDAOHelper dbHelper;
+    private Context context;
 
     public SQLiteShowDAO(Context context) {
+        this.context = context;
         dbHelper = new SQLiteDAOHelper(context);
     }
 
@@ -87,7 +89,6 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
 
     @Override
     public ArrayList<Show> getRecentShows() {
-        db = dbHelper.getReadableDatabase();
         return null;
     }
 
