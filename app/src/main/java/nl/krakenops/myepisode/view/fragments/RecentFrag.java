@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
-import nl.krakenops.myepisode.presenter.ShowPresenterAbstract;
 import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.ThumbAdapter;
 

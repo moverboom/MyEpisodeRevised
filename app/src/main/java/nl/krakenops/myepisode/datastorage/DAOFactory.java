@@ -1,5 +1,6 @@
 package nl.krakenops.myepisode.datastorage;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -39,5 +40,5 @@ public abstract class DAOFactory {
      * Create and return a DAO for the specified datasource implementation
      * @return ShowDAOInf the DAO instance which implements this interface
      */
-    public abstract ShowDAOInf getShowDAO();
+    public abstract ShowDAOInf getShowDAO(Context context);
 }

@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
-import nl.krakenops.myepisode.presenter.ShowPresenterAbstract;
 import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.fragments.AllFrag;
 import nl.krakenops.myepisode.view.fragments.FavFrag;
@@ -18,7 +17,7 @@ import nl.krakenops.myepisode.view.fragments.RecentFrag;
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
     final int PAGE_COUNT = 3;
     private String tabTitles[] = new String[] { "Recent", "Favorite", "All" };
-    private ShowPresenterAbstract presenter;
+    private ShowPresenterImpl presenter;
 
     public ViewPagerAdapter(FragmentManager fm, Context context) {
         super(fm);

@@ -48,7 +48,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
     @Override
     protected Show doInBackground(Void... params) {
         try {
-            TmdbApi api = new TmdbApi("secret");
+            TmdbApi api = new TmdbApi("361e460bdf4209b48c8db9b6ad0ea321");
             TvResultsPage searchTv = api.getSearch().searchTv(show.getName(), "en", 0);
             if (searchTv.getResults().size() > 0) {
                 String thumbnailPath = searchTv.getResults().get(0).getPosterPath();
@@ -75,21 +75,27 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                 * Retrieve all seasons. Each season has a list with episodes.
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
-                List<TvSeason> seasonList = searchTv.getResults().get(0).getSeasons();
+                int id = searchTv.getResults().get(0).getId();
+                List<TvSeason> seasonList = api.getTvSeries().getSeries(id, "en").getSeasons();
+                //api.getTvSeasons().getSeason(id, 1, "en").getEpisodes().size();
+                //api.getTvSeries().getSeries(id, "en").getSeasons();
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 try {
-                    for (int i = 0; i < seasonList.size(); i++) { //i iterates season list
-                        Season tmpSeason = new Season(seasonList.get(i).getSeasonNumber());
-                        for (int j = 0; j < seasonList.get(i).getEpisodes().size(); j++) { //j iterates episode list
-                            TvEpisode tvEpisode = seasonList.get(i).getEpisodes().get(j);
+                    for (int i = 0; i < api.getTvSeries().getSeries(id, "en").getNumberOfSeasons(); i++) { //i iterates season list
+                        Season tmpSeason = new Season(i+1);
+                        Log.d(this.getClass().getName(), "Created new Season with number" + tmpSeason.getSeason());
+                        List<TvEpisode> episodeList = api.getTvSeasons().getSeason(id, i, "en").getEpisodes();
+                        for (int j = 0; j < episodeList.size(); j++) { //j iterates episode list
+                            TvEpisode tvEpisode = episodeList.get(j);
                             Episode episode = new Episode(tvEpisode.getEpisodeNumber());
                             episode.setAirDate(formatter.parse(tvEpisode.getAirDate()));
+                            Log.d(this.getClass().getName(), "Created new Episode with number" + episode.getEpisode() + " and airdate " + formatter.format(episode.getAirDate()));
                             if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
                                 episode.setDateWatched(new Date());
                             }
                             tmpSeason.addEpisode(episode);
                         }
-                        tmpSeason.setMaxEpisodes(seasonList.get(i).getEpisodes().size());
+                        tmpSeason.setMaxEpisodes(episodeList.size());
                         show.addSeason(tmpSeason);
                     }
                 } catch (ParseException pE) {
@@ -138,7 +144,6 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
             while ((bufferLength = input.read(buffer)) > 0) {
                 fos.write(buffer, 0, bufferLength);
                 downloadedSize += bufferLength;
-                Log.i("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
             }
             fos.close();
             if (downloadedSize == totalSize) {

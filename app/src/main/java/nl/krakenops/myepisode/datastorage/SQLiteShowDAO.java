@@ -25,10 +25,8 @@ import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
 public class SQLiteShowDAO implements ShowDAOInf {
     private SQLiteDatabase db;
     private SQLiteDAOHelper dbHelper;
-    private Context context;
 
     public SQLiteShowDAO(Context context) {
-        this.context = context;
         dbHelper = new SQLiteDAOHelper(context);
     }
 
@@ -82,7 +80,7 @@ public class SQLiteShowDAO implements ShowDAOInf {
         //Insert season and episode
         SQLiteStatement seasonStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SEASON +
                 "(" + dbHelper.COL_SEASON + ", " + dbHelper.COL_FKSHOWID + ") VALUES (?, ?);");
-        SQLiteStatement episodeStmt = db.compileStatement("INTERT INTO " + dbHelper.TABLE_EPISODE +
+        SQLiteStatement episodeStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_EPISODE +
                 "(" + dbHelper.COL_EPISODE + ", " + dbHelper.COL_FKSEASONID + ", " + dbHelper.COL_WATCHEDAT + ") VALUES (?, ?, ?);");
         for (Season s : show.getSeasonsAsArrayList()) {
             seasonStmt.bindString(1, String.valueOf(s.getSeason()));

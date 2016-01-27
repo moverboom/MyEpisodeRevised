@@ -1,5 +1,6 @@
 package nl.krakenops.myepisode.datastorage;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -12,7 +13,7 @@ import nl.krakenops.myepisode.model.Show;
  */
 public interface ShowDAOInf {
 
-    void open();
+    void open() throws SQLException;
 
     void close();
 

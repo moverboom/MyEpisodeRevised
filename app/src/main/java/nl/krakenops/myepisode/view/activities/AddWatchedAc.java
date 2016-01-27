@@ -19,13 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
+import nl.krakenops.myepisode.model.Episode;
+import nl.krakenops.myepisode.model.Season;
+import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.presenter.ShowPresenter;
+import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.CompleteValuesAdapter;
 
 /**
  * Created by Matthijs on 19/01/2016.
  */
 public class AddWatchedAc extends AppCompatActivity{
-//    private SQLiteDbController dbController  = new SQLiteDbController(this);
+    private ShowPresenter showPresenter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +43,7 @@ public class AddWatchedAc extends AppCompatActivity{
 
         AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.editTextAddedShow); //Setting AutoComplete field
         actv.setAdapter(new CompleteValuesAdapter(this, actv.getText().toString())); //Setting AutoComplete Adapter to field
+        showPresenter = new ShowPresenterImpl(getApplicationContext());
         findButtonAdded();
     }
 
@@ -73,11 +80,18 @@ public class AddWatchedAc extends AppCompatActivity{
                 queryValues.put("Season", seasonEditText.getText().toString());
                 queryValues.put("Episode", episodeEditText.getText().toString());
 
+                Show show = new Show();
+                show.setName(showNameEditText.getText().toString());
+                Season season = new Season(Integer.parseInt(seasonEditText.getText().toString()));
+                Episode episode = new Episode(Integer.parseInt(episodeEditText.getText().toString()));
+                season.addEpisode(episode);
+                show.addSeason(season);
+
                 /*Hiding Soft Keyboard on button press*/
                 InputMethodManager iim = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 iim.hideSoftInputFromWindow(showNameEditText.getWindowToken(), 0);
                 /*Save data and set confirm layout*/
-                //dbController.insertValues(queryValues);
+                showPresenter.insertShow(show);
                 //setContentView(R.layout.add_watched_confirm);
             }
         }
