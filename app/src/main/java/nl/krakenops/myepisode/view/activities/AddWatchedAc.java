@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,7 +25,9 @@ import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
 import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
-import nl.krakenops.myepisode.view.adapters.CompleteValuesAdapter;
+import nl.krakenops.myepisode.view.adapters.AutoCompleteValues;
+import nl.krakenops.myepisode.view.adapters.DelayAutoCompleteTextView;
+import nl.krakenops.myepisode.view.adapters.ShowsCompleteAdapter;
 
 /**
  * Created by Matthijs on 19/01/2016.
@@ -41,8 +44,16 @@ public class AddWatchedAc extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.editTextAddedShow); //Setting AutoComplete field
-        actv.setAdapter(new CompleteValuesAdapter(this, actv.getText().toString())); //Setting AutoComplete Adapter to field
+        final DelayAutoCompleteTextView autcomplete = (DelayAutoCompleteTextView) findViewById(R.id.showTitleInput); //Setting edittext
+        autcomplete.setAdapter(new ShowsCompleteAdapter(this)); //Setting AutoComplete Adapter to field
+        autcomplete.setLoadingIndicator((android.widget.ProgressBar) findViewById(R.id.loading_indicator));
+        autcomplete.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AutoCompleteValues value = (AutoCompleteValues) parent.getItemAtPosition(position);
+                autcomplete.setText(value.getTitle());
+            }
+        });
         showPresenter = new ShowPresenterImpl(getApplicationContext());
         findButtonAdded();
     }
@@ -58,7 +69,7 @@ public class AddWatchedAc extends AppCompatActivity{
         public void onClick(View v) {
             List<EditText> fields = new ArrayList<>(); //List to save fields for check
             int notFilled = 0; //Range 0-3. +1 when field isn't filled properly
-            EditText showNameEditText = (EditText) findViewById(R.id.editTextAddedShow); //Find fields
+            EditText showNameEditText = (EditText) findViewById(R.id.showTitleInput); //Find fields
             EditText seasonEditText = (EditText) findViewById(R.id.editTextAddedSeason);
             EditText episodeEditText = (EditText) findViewById(R.id.editTextAddedEpisode);
             fields.add(showNameEditText); //Adding fields to List

@@ -17,23 +17,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dp">
-            <AutoCompleteTextView
-                android:id="@+id/editTextAddedShow"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignLeft="@+id/buttonAdded"
-                android:layout_alignStart="@+id/buttonAdded"
-                android:ems="10"
-                android:inputType="textCapWords"
-                android:text=""
-                android:gravity="top"
-                android:textColor="#ff1b1b1b">
-                <requestFocus/>
-            </AutoCompleteTextView>
 
+
+                <nl.krakenops.myepisode.view.adapters.DelayAutoCompleteTextView
+                    android:id="@+id/showTitleInput"
+                    android:inputType="textCapSentences"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="3dp"
+                    android:imeOptions="flagNoExtractUi|actionSearch"
+                    android:layout_alignStart="@+id/buttonAdded" />
+
+                <ProgressBar
+                    android:id="@+id/loading_indicator"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:visibility="gone"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="10dp" />
 
             <TextView
                 android:layout_width="wrap_content"

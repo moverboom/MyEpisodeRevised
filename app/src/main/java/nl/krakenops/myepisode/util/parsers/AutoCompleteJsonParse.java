@@ -15,24 +15,21 @@ import nl.krakenops.myepisode.view.adapters.AutoCompleteValues;
  * Created by Matthijs on 19/01/2016.
  */
 public class AutoCompleteJsonParse {
-    public AutoCompleteJsonParse(){}
-    public TmdbApi api = new TmdbApi("ecf8a3e4ef91346008bf400cbb9a6d00");
+    private TmdbApi api = new TmdbApi("361e460bdf4209b48c8db9b6ad0ea321");
+
     public List<AutoCompleteValues> getParseJsonWCF(String sName)
     {
-        List<AutoCompleteValues> ListData = new ArrayList<AutoCompleteValues>();
+        List<AutoCompleteValues> values = new ArrayList<AutoCompleteValues>();
         try {
-            TvResultsPage search = api.getSearch().searchTv(sName, "eng", 1);
-            Log.i("TMDB response", "[" + search + "]");
-            List<TmdbSearch> results = new ArrayList<TmdbSearch>();
+            TvResultsPage search = api.getSearch().searchTv(sName, "en", 1);
             List<TvSeries> listResult = search.getResults();
-            for(int i = 0; i < listResult.size(); i++){
-                String showName = listResult.get(i).getOriginalName();
-                ListData.add(new AutoCompleteValues(showName));
+            for(int i = 0; i < search.getResults().size(); i++){
+                values.add(new AutoCompleteValues(search.getResults().get(i).getOriginalName()));
             }
         } catch (Exception e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-        return ListData;
+        return values;
     }
 }
