@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import nl.krakenops.myepisode.datastorage.DAOFactory;
+import nl.krakenops.myepisode.datastorage.ShowDAOInf;
 import nl.krakenops.myepisode.model.Show;
 
 /**
@@ -14,11 +15,14 @@ public abstract class ShowPresenterAbstract implements ShowPresenter {
     private LinkedHashMap<String, Show> showList;
     private long DAY_IN_MS = 1000 * 60 * 60 * 24;
     private DAOFactory daoFactory;
+    private ShowDAOInf showDAO;
 
     public ShowPresenterAbstract() {
         showList = new LinkedHashMap<String, Show>();
         //Using the Factory Pattern to get a ShowDAO for the SQLiteDAO
         this.daoFactory = DAOFactory.getDAOFactory("nl.krakenops.myepisode.datastorage.SQLiteDAOFactory");
+        showDAO = daoFactory.getShowDAO();
+        showDAO.open();
     }
 
     public abstract void setUIRef(Object view);
@@ -29,7 +33,7 @@ public abstract class ShowPresenterAbstract implements ShowPresenter {
      * @return true if success
      */
     public void insertShow(Show show) {
-        daoFactory.getShowDAO().insertShow(show);
+        showDAO.insertShow(show);
     }
 
     /**
@@ -39,7 +43,7 @@ public abstract class ShowPresenterAbstract implements ShowPresenter {
     public ArrayList<Show> getAllShows() {
         /*IMPLEMENT DB CONNECTION*/
         ArrayList<Show> result = new ArrayList<Show>();
-        if (daoFactory.getShowDAO().getAllShows() != null) {
+        if (showDAO.getAllShows() != null) {
             result = daoFactory.getShowDAO().getAllShows();
         }
         return result;
@@ -53,7 +57,7 @@ public abstract class ShowPresenterAbstract implements ShowPresenter {
     public ArrayList<Show> getRecentShows() {
         /*IMPLEMENT DB CONNECTION + DATE CHECK*/
         ArrayList<Show> result = new ArrayList<Show>();
-        if (daoFactory.getShowDAO().getRecentShows() != null) {
+        if (showDAO.getRecentShows() != null) {
             result = daoFactory.getShowDAO().getRecentShows();
         }
         return result;
@@ -67,14 +71,14 @@ public abstract class ShowPresenterAbstract implements ShowPresenter {
     public ArrayList<Show> getFavShows() {
         /*IMPLEMENT CHECK FOR FAVORITE*/
         ArrayList<Show> result = new ArrayList<Show>();
-        if (daoFactory.getShowDAO().getFavShows() != null) {
+        if (showDAO.getFavShows() != null) {
             result = daoFactory.getShowDAO().getFavShows();
         }
         return result;
     }
 
-    public void updateShow(Show show) {
-        if (daoFactory.getShowDAO().updateShow(show)) {
+    public void setShowFavorite(Show show) {
+        if (showDAO.setShowFavorite(show)) {
             showList.put(show.getName(), show);
         }
         Log.d("ThumbnailPresenter", "Updating " + show.getName() + " to favorite = " + show.isFavorite());
@@ -84,5 +88,7 @@ public abstract class ShowPresenterAbstract implements ShowPresenter {
      * Updates the ViewPagerAdapter after the AsyncTask finishes downloading all the data.
      * @param show Show for which data was downloaded. Is returned by the AsyncTask.
      */
-    public abstract void updateUI(Show show);
+    public void updateUI(Show show) {
+        showList.put(show.getName(), show);
+    }
 }

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 import nl.krakenops.myepisode.model.Episode;
+import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
 
@@ -37,14 +38,6 @@ public class SQLiteShowDAO implements ShowDAOInf {
      */
     public void open() throws SQLException {
         db = dbHelper.getWritableDatabase();
-    }
-
-    /**
-     * Opens a readable database
-     * @throws SQLException
-     */
-    public void openReadable() throws SQLException {
-        db = dbHelper.getReadableDatabase();
     }
 
     /**
@@ -78,19 +71,29 @@ public class SQLiteShowDAO implements ShowDAOInf {
         //First store user submitted data in database
         //Inset show
         SQLiteStatement statement = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SHOWS +
-                "(" + dbHelper.COL_NAME + ") VALUES (?);");
+                "(" + dbHelper.COL_NAME + ", " + dbHelper.COL_ISFAVORITE + ") VALUES (?, ?);");
         statement.bindString(1, show.getName());
+        //Ternary operator. If the show is a favorite, assign 1
+        long isFavorite = (show.isFavorite()) ? 1:0;
+        statement.bindLong(2, isFavorite);
+        show.setId(statement.executeInsert()); //Method return the ID which we can set
 
-        //Select the ID from the earlier inserted Show
-        SQLiteStatement stmt = db.compileStatement("SELECT " + dbHelper.COL_ID +
-                " FROM " + dbHelper.TABLE_SHOWS + " WHERE " + dbHelper.COL_NAME + " = " + show.getName() + ";");
-        int insertID = Integer.parseInt(stmt.simpleQueryForString());
-        show.setId(insertID);
 
         //Insert season and episode
-        SQLiteStatement seasonStmt = db.compileStatement("INSERT INTO " + dbHelper.COL_SEASON +
+        SQLiteStatement seasonStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SEASON +
                 "(" + dbHelper.COL_SEASON + ", " + dbHelper.COL_FKSHOWID + ") VALUES (?, ?);");
-        
+        SQLiteStatement episodeStmt = db.compileStatement("INTERT INTO " + dbHelper.TABLE_EPISODE +
+                "(" + dbHelper.COL_EPISODE + ", " + dbHelper.COL_FKSEASONID + ", " + dbHelper.COL_WATCHEDAT + ") VALUES (?, ?, ?);");
+        for (Season s : show.getSeasonsAsArrayList()) {
+            seasonStmt.bindString(1, String.valueOf(s.getSeason()));
+            seasonStmt.bindLong(2, show.getId());
+            show.getSeason(s.getSeason()).setId(seasonStmt.executeInsert());
+            for (Episode e : s.getEpisodesAsArrayList()) {
+                episodeStmt.bindString(1, String.valueOf(e.getEpisode()));
+                episodeStmt.bindLong(2, show.getSeason(s.getSeason()).getId());
+                show.getSeason(s.getSeason()).getEpisode(e.getEpisode()).setId(episodeStmt.executeInsert());
+            }
+        }
         return show;
     }
 
@@ -200,11 +203,10 @@ public class SQLiteShowDAO implements ShowDAOInf {
      * Sets whether a show is a favorite or not using the given show object
      *
      * @param show     Show to set
-     * @param favorite boolean if show if favorite
      * @return true if success
      */
     @Override
-    public boolean setShowFavorite(Show show, boolean favorite) {
+    public boolean setShowFavorite(Show show) {
         return false;
     }
 

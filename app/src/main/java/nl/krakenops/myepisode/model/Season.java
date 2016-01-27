@@ -11,6 +11,7 @@ import java.util.Map;
  * Created by Matthijs on 23/01/2016.
  */
 public class Season implements Serializable {
+    private long id;
     private int season;
     private int maxEpisodes;
     private LinkedHashMap<Integer, Episode> episodes;
@@ -18,6 +19,10 @@ public class Season implements Serializable {
     public Season(int season) {
         this.episodes = new LinkedHashMap<Integer, Episode>();
         this.season = season;
+    }
+
+    public long getId() {
+        return id;
     }
 
     public int getSeason() {
@@ -40,6 +45,18 @@ public class Season implements Serializable {
             result.add((Episode)pair.getValue());
         }
         return result;
+    }
+
+    public Episode getEpisode(int episode) {
+        Episode result = null;
+        if (episodes.containsKey(episode)) {
+            result = episodes.get(episode);
+        }
+        return result;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setSeason(int season) {
@@ -67,6 +84,7 @@ public class Season implements Serializable {
 
         Season season1 = (Season) o;
 
+        if (getId() != season1.getId()) return false;
         if (getSeason() != season1.getSeason()) return false;
         if (getMaxEpisodes() != season1.getMaxEpisodes()) return false;
         return !(getEpisodes() != null ? !getEpisodes().equals(season1.getEpisodes()) : season1.getEpisodes() != null);
@@ -75,7 +93,8 @@ public class Season implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = getSeason();
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getSeason();
         result = 31 * result + getMaxEpisodes();
         result = 31 * result + (getEpisodes() != null ? getEpisodes().hashCode() : 0);
         return result;

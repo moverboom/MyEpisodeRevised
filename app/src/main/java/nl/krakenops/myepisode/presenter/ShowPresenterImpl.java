@@ -2,6 +2,8 @@ package nl.krakenops.myepisode.presenter;
 
 import android.content.Context;
 
+import java.util.concurrent.ExecutionException;
+
 import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
 import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
@@ -37,7 +39,11 @@ public class ShowPresenterImpl extends ShowPresenterAbstract {
     public void insertShow(Show show) {
         super.insertShow(show);
         ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, show, this);
-        showInfoDownloader.execute();
+        try {
+            updateUI(showInfoDownloader.execute().get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -47,7 +53,7 @@ public class ShowPresenterImpl extends ShowPresenterAbstract {
      */
     @Override
     public void updateUI(Show show) {
-        super.updateShow(show);
+        super.updateUI(show);
         view.notifyDataSetChanged();
     }
 }

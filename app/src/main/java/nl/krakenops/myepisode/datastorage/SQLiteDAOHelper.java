@@ -72,8 +72,8 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EPISODE +
                 "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_EPISODE + " INTEGER NOT NULL, " +
-                COL_WATCHEDAT + " TIMESTAMP, " +
-                COL_AIRDATE + " TIMESTAMP, " +
+                COL_WATCHEDAT + " VARCHAR, " +
+                COL_AIRDATE + " VARCHAR, " +
                 COL_FKSEASONID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY(" + COL_FKSEASONID + ") REFERENCES " + TABLE_SEASON + "(" + COL_ID + "));");
     }

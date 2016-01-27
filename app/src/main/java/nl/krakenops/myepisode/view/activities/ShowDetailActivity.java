@@ -21,7 +21,6 @@ import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
-import nl.krakenops.myepisode.presenter.ShowPresenterAbstract;
 import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.ExpandableListAdapter;
 
@@ -130,13 +129,13 @@ public class ShowDetailActivity extends AppCompatActivity {
             if (!show.isFavorite()) {
                 menuItem.setIcon(R.drawable.ic_fav_show_set);
                 show.setFavorite(true);
-                showPresenter.updateShow(show);
+                showPresenter.setShowFavorite(show);
                 Log.d("ShowDetailActivity", "Updating " + show.getName() + " to favorite");
 
             } else {
                 menuItem.setIcon(R.drawable.ic_fav_show);
                 show.setFavorite(false);
-                showPresenter.updateShow(show);
+                showPresenter.setShowFavorite(show);
                 Log.d("ShowDetailActivity", "Updating " + show.getName() + " to non-favorite");
             }
         }

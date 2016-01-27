@@ -15,7 +15,7 @@ import nl.krakenops.myepisode.R;
  * Created by Matthijs on 19/01/2016.
  */
 public class Show implements Serializable {
-    private int id;
+    private long id;
     private String name;
     private int thumbnail = R.drawable.chuck;
     private String thumbnailPath = null; //A thumbnail is shown in the fragments
@@ -27,7 +27,7 @@ public class Show implements Serializable {
         seasons = new LinkedHashMap<Integer, Season>();
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -97,7 +97,7 @@ public class Show implements Serializable {
         }
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

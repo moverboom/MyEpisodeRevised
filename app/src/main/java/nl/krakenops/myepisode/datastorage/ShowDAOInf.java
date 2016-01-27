@@ -12,6 +12,10 @@ import nl.krakenops.myepisode.model.Show;
  */
 public interface ShowDAOInf {
 
+    void open();
+
+    void close();
+
     /**
      * Checks if the datastorage contains the show for the given name
      * @param name name of the show to check
@@ -71,10 +75,9 @@ public interface ShowDAOInf {
     /**
      * Sets whether a show is a favorite or not using the given show object
      * @param show Show to set
-     * @param favorite boolean if show if favorite
      * @return true if success
      */
-    boolean setShowFavorite(Show show, boolean favorite);
+    boolean setShowFavorite(Show show);
 
     /**
      * Updates the episode watched.

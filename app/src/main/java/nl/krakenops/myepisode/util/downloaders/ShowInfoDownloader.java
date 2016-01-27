@@ -47,7 +47,6 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
 
     @Override
     protected Show doInBackground(Void... params) {
-        Show result = null;
         try {
             TmdbApi api = new TmdbApi("secret");
             TvResultsPage searchTv = api.getSearch().searchTv(show.getName(), "en", 0);
@@ -77,7 +76,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
                 List<TvSeason> seasonList = searchTv.getResults().get(0).getSeasons();
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 try {
                     for (int i = 0; i < seasonList.size(); i++) { //i iterates season list
                         Season tmpSeason = new Season(seasonList.get(i).getSeasonNumber());

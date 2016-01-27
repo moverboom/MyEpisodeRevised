@@ -10,7 +10,7 @@ import nl.krakenops.myepisode.datastorage.DAOFactory;
  * Created by Matthijs on 20/01/2016.
  */
 public class Episode implements Serializable {
-    private int id;
+    private long id;
     private int episode;
     private Date dateWatched;
     private Date airDate;
@@ -19,7 +19,7 @@ public class Episode implements Serializable {
         this.episode = episode;
     }
 
-    public int getID() {
+    public long getID() {
         return id;
     }
 
@@ -35,7 +35,7 @@ public class Episode implements Serializable {
         return airDate;
     }
 
-    public void setID(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -68,7 +68,7 @@ public class Episode implements Serializable {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = (int) (id ^ (id >>> 32));
         result = 31 * result + getEpisode();
         result = 31 * result + (getDateWatched() != null ? getDateWatched().hashCode() : 0);
         result = 31 * result + (getAirDate() != null ? getAirDate().hashCode() : 0);
