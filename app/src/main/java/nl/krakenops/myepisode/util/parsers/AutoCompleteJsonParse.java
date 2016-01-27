@@ -15,7 +15,7 @@ import nl.krakenops.myepisode.view.adapters.AutoCompleteValues;
  * Created by Matthijs on 19/01/2016.
  */
 public class AutoCompleteJsonParse {
-    private TmdbApi api = new TmdbApi("361e460bdf4209b48c8db9b6ad0ea321");
+    private TmdbApi api = new TmdbApi("secret");
 
     public List<AutoCompleteValues> getParseJsonWCF(String sName)
     {
