@@ -12,7 +12,6 @@ import java.util.Map;
  */
 public class Season implements Serializable {
     private int season;
-    private Date lastWatched;
     private int maxEpisodes;
     private LinkedHashMap<Integer, Episode> episodes;
 
@@ -23,10 +22,6 @@ public class Season implements Serializable {
 
     public int getSeason() {
         return season;
-    }
-
-    public Date getLastWatched() {
-        return lastWatched;
     }
 
     public int getMaxEpisodes() {
@@ -49,10 +44,6 @@ public class Season implements Serializable {
 
     public void setSeason(int season) {
         this.season = season;
-    }
-
-    public void setLastWatched(Date lastWatched) {
-        this.lastWatched = lastWatched;
     }
 
     public void setMaxEpisodes(int maxEpisodes) {
@@ -78,8 +69,6 @@ public class Season implements Serializable {
 
         if (getSeason() != season1.getSeason()) return false;
         if (getMaxEpisodes() != season1.getMaxEpisodes()) return false;
-        if (getLastWatched() != null ? !getLastWatched().equals(season1.getLastWatched()) : season1.getLastWatched() != null)
-            return false;
         return !(getEpisodes() != null ? !getEpisodes().equals(season1.getEpisodes()) : season1.getEpisodes() != null);
 
     }
@@ -87,7 +76,6 @@ public class Season implements Serializable {
     @Override
     public int hashCode() {
         int result = getSeason();
-        result = 31 * result + (getLastWatched() != null ? getLastWatched().hashCode() : 0);
         result = 31 * result + getMaxEpisodes();
         result = 31 * result + (getEpisodes() != null ? getEpisodes().hashCode() : 0);
         return result;

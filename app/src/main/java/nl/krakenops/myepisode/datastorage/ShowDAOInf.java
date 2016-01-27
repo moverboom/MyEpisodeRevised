@@ -29,6 +29,13 @@ public interface ShowDAOInf {
     Show insertShow(Show show);
 
     /**
+     * Used to update a show which was inserted for the first time.
+     * @param show Show to update
+     * @return true if success
+     */
+    boolean updateInsertShow(Show show);
+
+    /**
      * Returns a List with all recently watched shows as as Thumbnail
      * Recently = 7 days ago or less
      * @return List with Thumbnails
@@ -62,71 +69,41 @@ public interface ShowDAOInf {
     Show getShowByName(String name);
 
     /**
-     * Sets whether a show is a favorite or not using a given id
-     * @param id id of the show to set
-     * @param favorite boolean if show is favorite
-     * @return true if success
-     */
-    boolean setShowFavoriteById(int id, boolean favorite);
-
-    /**
-     * Sets whether a show is a favorite or not using a given name
-     * @param name name of the show to set
+     * Sets whether a show is a favorite or not using the given show object
+     * @param show Show to set
      * @param favorite boolean if show if favorite
      * @return true if success
      */
-    boolean setShowFavoriteByName(String name, boolean favorite);
+    boolean setShowFavorite(Show show, boolean favorite);
 
     /**
-     * Updates the episodes watched for a show using a given id
-     * @param id id of the show to update
-     * @param episode Episode to set as Episode
+     * Updates the episode watched.
+     * Uses the available Season and Episode models to get the correct information.
+     * @param show Show to update
      * @return true is success
      */
-    boolean updateShowEpisodesById(int id, Episode episode);
+    boolean updateShowEpisodes(Show show);
 
     /**
-     * Updates the episodes watched for a show using a given name
-     * @param name name of the show to set
-     * @param episode Episode to set as Episode
-     * @return true is success
-     */
-    boolean updateShowEpisodeByName(String name, Episode episode);
-
-    /**
-     * Updates all information about a show.
-     * @param show the show to update as Show
+     * Updates the thumbnailPath set for a show.
+     * Retrieves the new path from the show object
+     * @param show Show to update
      * @return true if success
      */
-    boolean updateShow(Show show);
+    boolean updateShowThumbnail(Show show);
 
     /**
-     * Removes an episode from a show using the given show id
-     * @param id id of the show from which to remove the episode
-     * @param episode Episode to remove as Episode
+     * Updates the backdropPath set for a show.
+     * Retrieves the new path from the show object
+     * @param show Show to update
      * @return true if success
      */
-    boolean removeEpisodeFromShowById(int id, Episode episode);
+    boolean updateShowBackdrop(Show show);
 
     /**
-     * Removes an episode from a show using a given show name
-     * @param name name of the show from which to remove the episode
-     * @param episode Episode to remove as Episode
-     * @return true is success
-     */
-    boolean removeEpisodeFromShowByName(String name, Episode episode);
-
-    /**
-     * Removes a show using the given id
-     * @param id id of the show to remove
+     * Removes a show
+     * @param show Show to remove
      * @return true if success
      */
-    boolean removeShowById(int id);
-
-    /**
-     * Removes a show using the given name
-     * @param name name of the show to remove
-     * @return true if success
-     */
-    boolean removeShowByName(String name);
+    boolean removeShow(Show show);
 }

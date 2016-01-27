@@ -28,16 +28,15 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
 
     protected static final String COL_THUMBNAILPATH = "thumbnailPath";
     protected static final String COL_NAME = "name";
-    protected static final String COL_LASTWATCHED = "lastWatched";
-    protected static final String COL_NEXTEPISODEAIRS = "nextEpisodeAirs";
+    protected static final String COL_ISFAVORITE = "isFavorite";
+    protected static final String COL_WATCHEDAT = "watchedAt";
+    protected static final String COL_AIRDATE = "airDate";
     protected static final String COL_FKTHUMBNAILID = "FK_ThumbnailID";
     protected static final String COL_BACKDROPPATH = "backdropPath";
     protected static final String COL_SEASON = "season";
-    protected static final String COL_MAXEPISODES = "maxEpisodes";
     protected static final String COL_FKBACKDROPID = "FK_BackdropID";
     protected static final String COL_FKSHOWID = "FK_ShowID";
     protected static final String COL_EPISODE = "episode";
-    protected static final String COL_WATCHEDAT = "watchedAt";
     protected static final String COL_FKSEASONID = "FK_SeasonID";
 
     public SQLiteDAOHelper(Context context) {
@@ -49,34 +48,33 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //table which holds thumbnails with backdrop
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_THUMBNAIL +
-                "("+COL_ID+" INTEGER primary key autoincrement, " + COL_THUMBNAILPATH + "VARCHAR NOT NULL);");
+                "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_THUMBNAILPATH + "VARCHAR NOT NULL);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_BACKDROP +
-                "("+COL_ID+" INTEGER primary key autoincrement, " +
-                COL_BACKDROPPATH + "VARCHAR);");
+                "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_BACKDROPPATH + " VARCHAR);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SHOWS +
-                "("+COL_ID+" INTEGER primary key autoincrement, " +
-                COL_NAME + "VARCHAR NOT NULL, " +
-                COL_LASTWATCHED + "TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
-                COL_NEXTEPISODEAIRS + "TIMESTAMP, " +
-                COL_FKTHUMBNAILID + "INTEGER," +
-                COL_FKBACKDROPID + "INTEGER, " +
+                "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_NAME + " VARCHAR NOT NULL, " +
+                COL_ISFAVORITE + " INTEGER DEFAULT 0, " +
+                COL_FKTHUMBNAILID + " INTEGER, " +
+                COL_FKBACKDROPID + " INTEGER, " +
                 "FOREIGN KEY("+COL_FKTHUMBNAILID+") REFERENCES "+TABLE_THUMBNAIL+"("+COL_ID+")" +
                 "FOREIGN KEY("+COL_FKBACKDROPID+") REFERENCES "+TABLE_BACKDROP+"("+COL_ID+"));");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SEASON +
-                "(" + COL_ID + " INTEGER primary key autoincrement, " +
-                COL_SEASON + "INTEGER NOT NULL, " +
-                COL_MAXEPISODES + "INTEGER, " +
-                COL_FKSHOWID + "INTEGER, " +
+                "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_SEASON + " INTEGER NOT NULL, " +
+                COL_FKSHOWID + " INTEGER, " +
                 "FOREIGN KEY(" + COL_FKSHOWID + ") REFERENCES shows(" + COL_ID + "));");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EPISODE +
-                "(" + COL_ID + " INTEGER primary key autoincrement, " +
-                COL_EPISODE + "INTEGER NOT NULL, " +
-                COL_WATCHEDAT + "TIMESTAMP" +
-                COL_FKSEASONID + "INTEGER NOT NULL, " +
+                "(" + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_EPISODE + " INTEGER NOT NULL, " +
+                COL_WATCHEDAT + " TIMESTAMP, " +
+                COL_AIRDATE + " TIMESTAMP, " +
+                COL_FKSEASONID + " INTEGER NOT NULL, " +
                 "FOREIGN KEY(" + COL_FKSEASONID + ") REFERENCES " + TABLE_SEASON + "(" + COL_ID + "));");
     }
 

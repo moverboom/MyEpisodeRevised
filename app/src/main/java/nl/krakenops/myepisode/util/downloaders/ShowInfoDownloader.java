@@ -11,8 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
@@ -74,19 +77,24 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
                 List<TvSeason> seasonList = searchTv.getResults().get(0).getSeasons();
-                for (int i = 0; i < seasonList.size(); i++) { //i iterates season list
-                    Season tmpSeason = new Season(seasonList.get(i).getSeasonNumber());
-                    for (int j = 0; j < seasonList.get(i).getEpisodes().size(); j++) { //j iterates episode list
-                        TvEpisode tvEpisode = seasonList.get(i).getEpisodes().get(j);
-                        Episode episode = new Episode(tvEpisode.getEpisodeNumber());
-                        if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
-                            episode.setDateWatched(new Date());
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+                try {
+                    for (int i = 0; i < seasonList.size(); i++) { //i iterates season list
+                        Season tmpSeason = new Season(seasonList.get(i).getSeasonNumber());
+                        for (int j = 0; j < seasonList.get(i).getEpisodes().size(); j++) { //j iterates episode list
+                            TvEpisode tvEpisode = seasonList.get(i).getEpisodes().get(j);
+                            Episode episode = new Episode(tvEpisode.getEpisodeNumber());
+                            episode.setAirDate(formatter.parse(tvEpisode.getAirDate()));
+                            if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
+                                episode.setDateWatched(new Date());
+                            }
+                            tmpSeason.addEpisode(episode);
                         }
-                        tmpSeason.addEpisode(episode);
+                        tmpSeason.setMaxEpisodes(seasonList.get(i).getEpisodes().size());
+                        show.addSeason(tmpSeason);
                     }
-                    tmpSeason.setMaxEpisodes(seasonList.get(i).getEpisodes().size());
-                    tmpSeason.setLastWatched(new Date());
-                    show.addSeason(tmpSeason);
+                } catch (ParseException pE) {
+                    pE.printStackTrace();
                 }
             }
         } catch (IOException iE) {

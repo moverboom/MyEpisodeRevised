@@ -10,7 +10,9 @@ import android.util.Log;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Show;
@@ -74,95 +76,184 @@ public class SQLiteShowDAO implements ShowDAOInf {
     @Override
     public Show insertShow(Show show) {
         //First store user submitted data in database
+        //Inset show
         SQLiteStatement statement = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SHOWS +
-                "(" + dbHelper.COL_NAME + ", "
-                + dbHelper.COL_LASTWATCHED + ") VALUES (?, ?);");
+                "(" + dbHelper.COL_NAME + ") VALUES (?);");
         statement.bindString(1, show.getName());
-        statement.bindString(2, show.getLastWatched().toString());
-        long insertID = statement.executeInsert();
-        if (containsShow(show.getName())) {
-            Log.i(this.getClass().getName(), String.valueOf(insertID));
-            show.setId(insertID);
-        }
+
+        //Select the ID from the earlier inserted Show
+        SQLiteStatement stmt = db.compileStatement("SELECT " + dbHelper.COL_ID +
+                " FROM " + dbHelper.TABLE_SHOWS + " WHERE " + dbHelper.COL_NAME + " = " + show.getName() + ";");
+        int insertID = Integer.parseInt(stmt.simpleQueryForString());
+        show.setId(insertID);
+
+        //Insert season and episode
+        SQLiteStatement seasonStmt = db.compileStatement("INSERT INTO " + dbHelper.COL_SEASON +
+                "(" + dbHelper.COL_SEASON + ", " + dbHelper.COL_FKSHOWID + ") VALUES (?, ?);");
+        
         return show;
     }
 
+    /**
+     * Used to update a show which was inserted for the first time.
+     * @param show Show to update
+     * @return true if success
+     */
+    @Override
+    public boolean updateInsertShow(Show show) {
+        boolean result = false;
+
+        //Insert thumbnailPath and store ID
+        SQLiteStatement thumbStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_THUMBNAIL +
+                "(" + dbHelper.COL_THUMBNAILPATH + ") VALUES (?);");
+        thumbStmt.bindString(1, show.getThumbnailPath());
+        long thumbID = thumbStmt.executeInsert();
+
+        //Insert backdropPath and store ID
+        SQLiteStatement backdropStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_BACKDROP +
+                "(" + dbHelper.COL_BACKDROPPATH + ") VALUES (?);");
+        backdropStmt.bindString(1, show.getBackdropPath());
+        long backdropID = backdropStmt.executeInsert();
+
+        //Update show thumbnail and backdrop paths
+        SQLiteStatement updateStmt = db.compileStatement("UPDATE " + dbHelper.TABLE_SHOWS +
+                "SET " + dbHelper.COL_FKTHUMBNAILID + " = ?, " + dbHelper.COL_FKBACKDROPID + " = ? " +
+                "WHERE " + dbHelper.COL_ID + " = " + show.getId() + ";");
+        updateStmt.bindLong(1, thumbID);
+        updateStmt.bindLong(2, backdropID);
+        updateStmt.executeUpdateDelete();
+
+        //Update episodes and seasons
+        //First we compile all needed statements, which will later be used in a for loop
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+        SQLiteStatement seasonStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SEASON +
+                "(" + dbHelper.COL_SEASON + ", " +
+                dbHelper.COL_FKSHOWID + ") VALUES (?, ?, ?);");
+        SQLiteStatement episodeStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_EPISODE +
+                "(" + dbHelper.COL_EPISODE + ", " +
+                dbHelper.COL_AIRDATE + ", " +
+                dbHelper.COL_FKSEASONID + ") VALUES (?, ?, ?);");
+        //Separate statement for the episode which has already been watched
+        SQLiteStatement watchedEpisodeStmt = db.compileStatement("UPDATE " + dbHelper.TABLE_EPISODE +
+                "SET " + dbHelper.COL_AIRDATE + " = ? " +
+                "WHERE " + dbHelper.COL_ID + " = ?;");
+
+
+
+        return result;
+    }
+
+    /**
+     * Returns a List with all recently watched shows as as Thumbnail
+     * Recently = 7 days ago or less
+     *
+     * @return List with Thumbnails
+     */
     @Override
     public ArrayList<Show> getRecentShows() {
         return null;
     }
 
+    /**
+     * Returns a List with all favorite shows as as Thumbnail
+     *
+     * @return List with Thumbnails
+     */
     @Override
     public ArrayList<Show> getFavShows() {
         return null;
     }
 
+    /**
+     * Returns a List with all watched shows as as Thumbnail
+     *
+     * @return List with Thumbnails
+     */
     @Override
     public ArrayList<Show> getAllShows() {
         return null;
     }
 
+    /**
+     * Returns a show as Thumbnail for a given id
+     *
+     * @param id ID of the show to find
+     * @return show as Thumbnail
+     */
     @Override
     public Show getShowByID(int id) {
         return null;
     }
 
+    /**
+     * Return a show as a Thumbnail for a given name
+     *
+     * @param name name of the show to find
+     * @return show as Thumbnail
+     */
     @Override
     public Show getShowByName(String name) {
         return null;
     }
 
+    /**
+     * Sets whether a show is a favorite or not using the given show object
+     *
+     * @param show     Show to set
+     * @param favorite boolean if show if favorite
+     * @return true if success
+     */
     @Override
-    public boolean setShowFavoriteById(int id, boolean favorite) {
-        return false;
-    }
-
-    @Override
-    public boolean setShowFavoriteByName(String name, boolean favorite) {
-        return false;
-    }
-
-    @Override
-    public boolean updateShowEpisodesById(int id, Episode episode) {
-        return false;
-    }
-
-    @Override
-    public boolean updateShowEpisodeByName(String name, Episode episode) {
+    public boolean setShowFavorite(Show show, boolean favorite) {
         return false;
     }
 
     /**
-     * Updates all information related to a show.
-     * Should only be used when the show is inserted for the first time.
-     * @param show the show to update as Show
+     * Updates the episode watched.
+     * Uses the available Season and Episode models to get the correct information.
+     *
+     * @param show Show to update
+     * @return true is success
+     */
+    @Override
+    public boolean updateShowEpisodes(Show show) {
+        return false;
+    }
+
+    /**
+     * Updates the thumbnailPath set for a show.
+     * Retrieves the new path from the show object
+     *
+     * @param show Show to update
      * @return true if success
      */
     @Override
-    public boolean updateShow(Show show) {
-        //First insert thumbnail and backdrop
-        //Then set refs in Shows
-        
+    public boolean updateShowThumbnail(Show show) {
         return false;
     }
 
+    /**
+     * Updates the backdropPath set for a show.
+     * Retrieves the new path from the show object
+     *
+     * @param show Show to update
+     * @return true if success
+     */
     @Override
-    public boolean removeEpisodeFromShowById(int id, Episode episode) {
+    public boolean updateShowBackdrop(Show show) {
         return false;
     }
 
+    /**
+     * Removes a show
+     *
+     * @param show Show to remove
+     * @return true if success
+     */
     @Override
-    public boolean removeEpisodeFromShowByName(String name, Episode episode) {
+    public boolean removeShow(Show show) {
         return false;
     }
 
-    @Override
-    public boolean removeShowById(int id) {
-        return false;
-    }
 
-    @Override
-    public boolean removeShowByName(String name) {
-        return false;
-    }
 }

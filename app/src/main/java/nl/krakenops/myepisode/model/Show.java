@@ -15,20 +15,19 @@ import nl.krakenops.myepisode.R;
  * Created by Matthijs on 19/01/2016.
  */
 public class Show implements Serializable {
-    private long id;
+    private int id;
     private String name;
     private int thumbnail = R.drawable.chuck;
     private String thumbnailPath = null; //A thumbnail is shown in the fragments
     private String backdropPath = null; //A backdrop is shown in the ShowDetailActivity
     private boolean isFavorite = false;
-    private Date lastWatched = new Date(); //Instantiate new Date
     private LinkedHashMap<Integer, Season> seasons; //Key = SeasonNumber    Value = Season object
 
     public Show() {
         seasons = new LinkedHashMap<Integer, Season>();
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
@@ -76,10 +75,6 @@ public class Show implements Serializable {
         return result;
     }
 
-    public Date getLastWatched() {
-        return lastWatched;
-    }
-
     public String getThumbnailPath() {
         return thumbnailPath;
     }
@@ -102,7 +97,7 @@ public class Show implements Serializable {
         }
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -114,10 +109,6 @@ public class Show implements Serializable {
                 seasons.put(season.getSeason(), season);
             }
         }
-    }
-
-    public void setLastWatched(Date date) {
-        this.lastWatched = date;
     }
 
     public void setName(String name) {
@@ -134,5 +125,37 @@ public class Show implements Serializable {
 
     public void setBackdropPath(String backdropPath) {
         this.backdropPath = backdropPath;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Show show = (Show) o;
+
+        if (getId() != show.getId()) return false;
+        if (thumbnail != show.thumbnail) return false;
+        if (isFavorite() != show.isFavorite()) return false;
+        if (getName() != null ? !getName().equals(show.getName()) : show.getName() != null)
+            return false;
+        if (getThumbnailPath() != null ? !getThumbnailPath().equals(show.getThumbnailPath()) : show.getThumbnailPath() != null)
+            return false;
+        if (getBackdropPath() != null ? !getBackdropPath().equals(show.getBackdropPath()) : show.getBackdropPath() != null)
+            return false;
+        return !(getSeasons() != null ? !getSeasons().equals(show.getSeasons()) : show.getSeasons() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + (getName() != null ? getName().hashCode() : 0);
+        result = 31 * result + thumbnail;
+        result = 31 * result + (getThumbnailPath() != null ? getThumbnailPath().hashCode() : 0);
+        result = 31 * result + (getBackdropPath() != null ? getBackdropPath().hashCode() : 0);
+        result = 31 * result + (isFavorite() ? 1 : 0);
+        result = 31 * result + (getSeasons() != null ? getSeasons().hashCode() : 0);
+        return result;
     }
 }
