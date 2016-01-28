@@ -17,8 +17,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import javax.net.ssl.HttpsURLConnection;
+
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
+import info.movito.themoviedbapi.model.core.ResponseStatusException;
 import info.movito.themoviedbapi.model.tv.TvEpisode;
 import info.movito.themoviedbapi.model.tv.TvSeason;
 import nl.krakenops.myepisode.model.Episode;
@@ -52,14 +55,14 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
             TvResultsPage searchTv = api.getSearch().searchTv(show.getName(), "en", 0);
             if (searchTv.getResults().size() > 0) {
                 String thumbnailPath = searchTv.getResults().get(0).getPosterPath();
-                URL thumbnailUrl = new URL(api.getConfiguration().getBaseUrl() + api.getConfiguration().getPosterSizes().get(3) + thumbnailPath);
+                URL thumbnailUrl = new URL(api.getConfiguration().getSecureBaseUrl() + api.getConfiguration().getPosterSizes().get(3) + thumbnailPath);
                 Log.d(this.getClass().getName(), "thumbnail URL " + thumbnailUrl);
 
                 //Now that we have the URL, we can download the thumbnail and set it
                 show.setThumbnailPath(downloadImage(thumbnailUrl, THUMBNAIL));
                 //Backdrop follows
                 String backdropPath = searchTv.getResults().get(0).getBackdropPath();
-                URL backdropUrl = new URL(api.getConfiguration().getBaseUrl() + api.getConfiguration().getBackdropSizes().get(0) + backdropPath);
+                URL backdropUrl = new URL(api.getConfiguration().getSecureBaseUrl() + api.getConfiguration().getBackdropSizes().get(0) + backdropPath);
                 show.setBackdropPath(downloadImage(backdropUrl, BACKDROP));
 
                 //Store the submitted episode number in a variable.
@@ -76,9 +79,6 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
                 int id = searchTv.getResults().get(0).getId();
-                List<TvSeason> seasonList = api.getTvSeries().getSeries(id, "en").getSeasons();
-                //api.getTvSeasons().getSeason(id, 1, "en").getEpisodes().size();
-                //api.getTvSeries().getSeries(id, "en").getSeasons();
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
                 try {
                     for (int i = 0; i < api.getTvSeries().getSeries(id, "en").getNumberOfSeasons(); i++) { //i iterates season list
@@ -100,6 +100,14 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                     }
                 } catch (ParseException pE) {
                     pE.printStackTrace();
+                } catch (ResponseStatusException rE) {
+                    Log.e(this.getClass().getName(), "Error status code"+ String.valueOf(rE.getResponseStatus().getStatusCode()));
+                    //Error code seems to be 34 for every ResponseStatusException. This translates to a resource which could not be fount
+                    //In this case Episode information.
+                    //A possible solution here would be to NOT download any further Episode information and just take user input.
+                    //Maybe display a message of this????
+                    rE.printStackTrace();
+                    //API error, Do something with this
                 }
             }
         } catch (IOException iE) {
@@ -119,7 +127,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
         String result = null;
         try {
             //Create connection
-            HttpURLConnection urlConnection = (HttpURLConnection) thumbnailUrl.openConnection();
+            HttpsURLConnection urlConnection = (HttpsURLConnection) thumbnailUrl.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoOutput(true);
             urlConnection.connect();

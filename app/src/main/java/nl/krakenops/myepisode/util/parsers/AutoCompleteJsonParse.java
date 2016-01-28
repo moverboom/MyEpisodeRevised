@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import info.movito.themoviedbapi.TmdbApi;
-import info.movito.themoviedbapi.TmdbSearch;
-import info.movito.themoviedbapi.TvResultsPage;
 import info.movito.themoviedbapi.model.tv.TvSeries;
 import nl.krakenops.myepisode.view.adapters.AutoCompleteValues;
 
@@ -21,13 +19,11 @@ public class AutoCompleteJsonParse {
     {
         List<AutoCompleteValues> values = new ArrayList<AutoCompleteValues>();
         try {
-            TvResultsPage search = api.getSearch().searchTv(sName, "en", 1);
-            List<TvSeries> listResult = search.getResults();
-            for(int i = 0; i < search.getResults().size(); i++){
-                values.add(new AutoCompleteValues(search.getResults().get(i).getOriginalName()));
+            List<TvSeries> result = api.getSearch().searchTv(sName, "en", 0).getResults();
+            for(int i = 0; i < result.size(); i++){
+                values.add(new AutoCompleteValues(result.get(i).getName()));
             }
         } catch (Exception e1) {
-            // TODO Auto-generated catch block
             e1.printStackTrace();
         }
         return values;
