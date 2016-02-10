@@ -1,6 +1,5 @@
 package nl.krakenops.myepisode;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -12,7 +11,8 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import nl.krakenops.myepisode.presenter.ThumbnailPresenter;
+import java.io.Serializable;
+
 import nl.krakenops.myepisode.view.activities.AddWatchedAc;
 import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
 import nl.krakenops.myepisode.util.slidingstabs.SlidingTabLayout;

@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.List;
 
 import nl.krakenops.myepisode.R;
@@ -23,7 +22,7 @@ import nl.krakenops.myepisode.view.activities.ShowDetailActivity;
 /**
  * Created by Matthijs on 19/01/2016.
  */
-public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder> implements Serializable {
+public class ThumbAdapter extends RecyclerView.Adapter<ThumbAdapter.ThumbHolder> {
     private Activity activity;
     protected List<Show> showList;
 

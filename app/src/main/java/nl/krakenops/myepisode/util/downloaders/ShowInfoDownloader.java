@@ -1,7 +1,6 @@
 package nl.krakenops.myepisode.util.downloaders;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
@@ -11,20 +10,24 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import info.movito.themoviedbapi.TmdbApi;
 import info.movito.themoviedbapi.TvResultsPage;
+import info.movito.themoviedbapi.model.core.ResponseStatusException;
 import info.movito.themoviedbapi.model.tv.TvEpisode;
 import info.movito.themoviedbapi.model.tv.TvSeason;
-import nl.krakenops.myepisode.datastorage.SQLiteShowDAO;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 
 /**
  * This class extends AsyncTask and downloads all show information needed.
@@ -32,35 +35,34 @@ import nl.krakenops.myepisode.model.Show;
  * Once this class finishes downloading everything, it updates the show.
  * Created by Matthijs on 24/01/2016.
  */
-public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
+public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
     private Context context;
     private Show show;
-    private SQLiteShowDAO db;
+    private ShowPresenterImpl showPresenter;
     private static final String THUMBNAIL = "thumbnail";
     private static final String BACKDROP = "backdrop";
 
-    public ShowInfoDownloader(Context context, Show show, SQLiteShowDAO db) {
+    public ShowInfoDownloader(Context context, Show show, ShowPresenterImpl showPresenter) {
         this.context = context;
         this.show = show;
-        this.db = db;
+        this.showPresenter = showPresenter;
     }
 
     @Override
-    protected Boolean doInBackground(Void... params) {
-        boolean result = false;
+    protected Show doInBackground(Void... params) {
         try {
             TmdbApi api = new TmdbApi("secret");
             TvResultsPage searchTv = api.getSearch().searchTv(show.getName(), "en", 0);
             if (searchTv.getResults().size() > 0) {
                 String thumbnailPath = searchTv.getResults().get(0).getPosterPath();
-                URL thumbnailUrl = new URL(api.getConfiguration().getBaseUrl() + api.getConfiguration().getPosterSizes().get(3) + thumbnailPath);
+                URL thumbnailUrl = new URL(api.getConfiguration().getSecureBaseUrl() + api.getConfiguration().getPosterSizes().get(3) + thumbnailPath);
                 Log.d(this.getClass().getName(), "thumbnail URL " + thumbnailUrl);
 
                 //Now that we have the URL, we can download the thumbnail and set it
                 show.setThumbnailPath(downloadImage(thumbnailUrl, THUMBNAIL));
                 //Backdrop follows
                 String backdropPath = searchTv.getResults().get(0).getBackdropPath();
-                URL backdropUrl = new URL(api.getConfiguration().getBaseUrl() + api.getConfiguration().getBackdropSizes().get(0) + backdropPath);
+                URL backdropUrl = new URL(api.getConfiguration().getSecureBaseUrl() + api.getConfiguration().getBackdropSizes().get(0) + backdropPath);
                 show.setBackdropPath(downloadImage(backdropUrl, BACKDROP));
 
                 //Store the submitted episode number in a variable.
@@ -76,28 +78,42 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
                 * Retrieve all seasons. Each season has a list with episodes.
                 * This backdrop is displayed in the ShowDetailActivity.
                 * */
-                List<TvSeason> seasonList = searchTv.getResults().get(0).getSeasons();
-                for (int i = 0; i < seasonList.size(); i++) { //i iterates season list
-                    Season tmpSeason = new Season(seasonList.get(i).getSeasonNumber());
-                    for (int j = 0; j < seasonList.get(i).getEpisodes().size(); j++) { //j iterates episode list
-                        TvEpisode tvEpisode = seasonList.get(i).getEpisodes().get(j);
-                        Episode episode = new Episode(tvEpisode.getEpisodeNumber());
-                        if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
-                            episode.setDateWatched(new Date());
+                int id = searchTv.getResults().get(0).getId();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+                try {
+                    for (int i = 0; i < api.getTvSeries().getSeries(id, "en").getNumberOfSeasons(); i++) { //i iterates season list
+                        Season tmpSeason = new Season(i+1);
+                        Log.d(this.getClass().getName(), "Created new Season with number" + tmpSeason.getSeason());
+                        List<TvEpisode> episodeList = api.getTvSeasons().getSeason(id, i, "en").getEpisodes();
+                        for (int j = 0; j < episodeList.size(); j++) { //j iterates episode list
+                            TvEpisode tvEpisode = episodeList.get(j);
+                            Episode episode = new Episode(tvEpisode.getEpisodeNumber());
+                            episode.setAirDate(formatter.parse(tvEpisode.getAirDate()));
+                            Log.d(this.getClass().getName(), "Created new Episode with number" + episode.getEpisode() + " and airdate " + formatter.format(episode.getAirDate()));
+                            if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
+                                episode.setDateWatched(new Date());
+                            }
+                            tmpSeason.addEpisode(episode);
                         }
-                        tmpSeason.addEpisode(episode);
+                        tmpSeason.setMaxEpisodes(episodeList.size());
+                        show.addSeason(tmpSeason);
                     }
-                    tmpSeason.setMaxEpisodes(seasonList.get(i).getEpisodes().size());
-                    tmpSeason.setLastWatched(new Date());
-                    show.addSeason(tmpSeason);
+                } catch (ParseException pE) {
+                    pE.printStackTrace();
+                } catch (ResponseStatusException rE) {
+                    Log.e(this.getClass().getName(), "Error status code"+ String.valueOf(rE.getResponseStatus().getStatusCode()));
+                    //Error code seems to be 34 for every ResponseStatusException. This translates to a resource which could not be fount
+                    //In this case Episode information.
+                    //A possible solution here would be to NOT download any further Episode information and just take user input.
+                    //Maybe display a message of this????
+                    rE.printStackTrace();
+                    //API error, Do something with this
                 }
-                db.open();
-                result = db.updateShow(show);
             }
-        } catch (IOException | SQLException iE) {
+        } catch (IOException iE) {
             iE.printStackTrace();
         }
-        return result;
+        return show;
     }
 
     /**
@@ -111,7 +127,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
         String result = null;
         try {
             //Create connection
-            HttpURLConnection urlConnection = (HttpURLConnection) thumbnailUrl.openConnection();
+            HttpsURLConnection urlConnection = (HttpsURLConnection) thumbnailUrl.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setDoOutput(true);
             urlConnection.connect();
@@ -136,7 +152,6 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
             while ((bufferLength = input.read(buffer)) > 0) {
                 fos.write(buffer, 0, bufferLength);
                 downloadedSize += bufferLength;
-                Log.i("Progress:", "downloadedSize:" + downloadedSize + "totalSize:" + totalSize);
             }
             fos.close();
             if (downloadedSize == totalSize) {
@@ -146,5 +161,11 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Boolean> {
             throw new IOException(iE.getMessage());
         }
         return result;
+    }
+
+    @Override
+    protected void onPostExecute(Show result) {
+        super.onPostExecute(result);
+        showPresenter.updateUI(result);
     }
 }

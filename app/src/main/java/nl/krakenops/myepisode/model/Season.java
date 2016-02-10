@@ -1,5 +1,6 @@
 package nl.krakenops.myepisode.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -9,9 +10,9 @@ import java.util.Map;
 /**
  * Created by Matthijs on 23/01/2016.
  */
-public class Season {
+public class Season implements Serializable {
+    private long id;
     private int season;
-    private Date lastWatched;
     private int maxEpisodes;
     private LinkedHashMap<Integer, Episode> episodes;
 
@@ -20,12 +21,12 @@ public class Season {
         this.season = season;
     }
 
-    public int getSeason() {
-        return season;
+    public long getId() {
+        return id;
     }
 
-    public Date getLastWatched() {
-        return lastWatched;
+    public int getSeason() {
+        return season;
     }
 
     public int getMaxEpisodes() {
@@ -46,12 +47,20 @@ public class Season {
         return result;
     }
 
-    public void setSeason(int season) {
-        this.season = season;
+    public Episode getEpisode(int episode) {
+        Episode result = null;
+        if (episodes.containsKey(episode)) {
+            result = episodes.get(episode);
+        }
+        return result;
     }
 
-    public void setLastWatched(Date lastWatched) {
-        this.lastWatched = lastWatched;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setSeason(int season) {
+        this.season = season;
     }
 
     public void setMaxEpisodes(int maxEpisodes) {
@@ -75,18 +84,17 @@ public class Season {
 
         Season season1 = (Season) o;
 
+        if (getId() != season1.getId()) return false;
         if (getSeason() != season1.getSeason()) return false;
         if (getMaxEpisodes() != season1.getMaxEpisodes()) return false;
-        if (getLastWatched() != null ? !getLastWatched().equals(season1.getLastWatched()) : season1.getLastWatched() != null)
-            return false;
         return !(getEpisodes() != null ? !getEpisodes().equals(season1.getEpisodes()) : season1.getEpisodes() != null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = getSeason();
-        result = 31 * result + (getLastWatched() != null ? getLastWatched().hashCode() : 0);
+        int result = (int) (getId() ^ (getId() >>> 32));
+        result = 31 * result + getSeason();
         result = 31 * result + getMaxEpisodes();
         result = 31 * result + (getEpisodes() != null ? getEpisodes().hashCode() : 0);
         return result;

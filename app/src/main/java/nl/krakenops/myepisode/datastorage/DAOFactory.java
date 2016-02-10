@@ -1,5 +1,6 @@
 package nl.krakenops.myepisode.datastorage;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -7,7 +8,7 @@ import java.io.Serializable;
 /**
  * Created by Matthijs on 22/01/2016.
  */
-public abstract class DAOFactory implements Serializable {
+public abstract class DAOFactory {
 
     /**
      * This method creates an isntance of the specified factory class
@@ -39,5 +40,5 @@ public abstract class DAOFactory implements Serializable {
      * Create and return a DAO for the specified datasource implementation
      * @return ShowDAOInf the DAO instance which implements this interface
      */
-    public abstract ShowDAOInf getShowDAO();
+    public abstract ShowDAOInf getShowDAO(Context context);
 }
