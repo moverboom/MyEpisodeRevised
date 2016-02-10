@@ -147,7 +147,7 @@ public class SQLiteShowDAO implements Serializable, ShowDAOInf {
     public boolean updateShow(Show show) {
         //First insert thumbnail and backdrop
         //Then set refs in Shows
-        
+
         return false;
     }
 
