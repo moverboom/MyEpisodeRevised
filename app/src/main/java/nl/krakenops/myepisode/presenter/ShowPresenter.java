@@ -18,7 +18,7 @@ public interface ShowPresenter {
      * @param show Show to insert
      * @return true if success
      */
-    void insertShow(Show show);
+    void addEpisode(Show show);
 
     /**
      * Returns a List with all shows as Thumbnail.

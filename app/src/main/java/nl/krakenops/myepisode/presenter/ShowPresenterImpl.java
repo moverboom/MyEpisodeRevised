@@ -19,8 +19,7 @@ import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
  * Created by Matthijs on 26/01/2016.
  */
 public class ShowPresenterImpl implements ShowPresenter {
-    private LinkedHashMap<String, Show> showList;
-    private long DAY_IN_MS = 1000 * 60 * 60 * 24;
+    private LinkedHashMap<String, Show> showList; //Key is show name
     private DAOFactory daoFactory;
     private ShowDAOInf showDAO;
     //Android specific variables
@@ -48,13 +47,22 @@ public class ShowPresenterImpl implements ShowPresenter {
     /**
      * Inserts a Show
      * @param show Show to insert
-     * @return true if success
      */
     @Override
-    public void insertShow(Show show) {
-        showDAO.insertShow(show);
-        ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, show, this);
-        showInfoDownloader.execute();
+    public void addEpisode(Show show) {
+        if (showList.containsKey(show.getName())) {
+            showList.get(show.getName()).addEpisode(show.getSeasonsAsArrayList().get(0).getEpisodesAsArrayList().get(0), show.getSeasonsAsArrayList().get(0).getSeason()); //When a show is inserted, there is only one season and one episode. The rest is handled by ShowInfoDownloader
+            showDAO.updateShowEpisodes(show);
+        } else {
+            if (showDAO.containsShow(show.getName())) {
+                showList.put(show.getName(), showDAO.updateShowEpisodes(show));
+            } else {
+                if (showDAO.insertShow(show) == null) {
+                    ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, show, this);
+                    showInfoDownloader.execute();
+                }
+            }
+        }
     }
 
     /**
@@ -76,7 +84,7 @@ public class ShowPresenterImpl implements ShowPresenter {
      * @return List with Thumbnails
      */
     public ArrayList<Show> getRecentShows() {
-        /*IMPLEMENT DB CONNECTION + DATE CHECK*/
+        /*DATE CHECK IS IMPLEMENTED IN DAO*/
         ArrayList<Show> result = new ArrayList<Show>();
         if (showDAO.getRecentShows() != null) {
             result = showDAO.getRecentShows();
@@ -111,6 +119,8 @@ public class ShowPresenterImpl implements ShowPresenter {
      */
     public void updateUI(Show show) {
         showList.put(show.getName(), show);
+        Log.d(this.getClass().getName(), "Show ID = " + show.getId());
+        showDAO.updateInsertShow(show);
         //view.notifyDataSetChanged();
     }
 }

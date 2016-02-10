@@ -102,7 +102,7 @@ public class AddWatchedAc extends AppCompatActivity{
                 InputMethodManager iim = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 iim.hideSoftInputFromWindow(showNameEditText.getWindowToken(), 0);
                 /*Save data and set confirm layout*/
-                showPresenter.insertShow(show);
+                showPresenter.addEpisode(show);
                 //setContentView(R.layout.add_watched_confirm);
             }
         }

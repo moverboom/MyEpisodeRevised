@@ -28,6 +28,7 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
     protected static final String COL_THUMBNAILPATH = "thumbnailPath";
     protected static final String COL_NAME = "name";
     protected static final String COL_ISFAVORITE = "isFavorite";
+    protected static final String COL_LASTWATCHEDAT = "lastWatchedAt";
     protected static final String COL_WATCHEDAT = "watchedAt";
     protected static final String COL_AIRDATE = "airDate";
     protected static final String COL_FKTHUMBNAILID = "FK_ThumbnailID";
@@ -56,6 +57,7 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
                 "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_NAME + " VARCHAR NOT NULL, " +
                 COL_ISFAVORITE + " INTEGER DEFAULT 0, " +
+                COL_LASTWATCHEDAT + "VARCHAR, " +
                 COL_FKTHUMBNAILID + " INTEGER, " +
                 COL_FKBACKDROPID + " INTEGER, " +
                 "FOREIGN KEY("+COL_FKTHUMBNAILID+") REFERENCES "+TABLE_THUMBNAIL+"("+COL_ID+")" +

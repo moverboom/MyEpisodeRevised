@@ -12,6 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import nl.krakenops.myepisode.model.Episode;
@@ -69,11 +70,14 @@ public class SQLiteShowDAO implements ShowDAOInf {
         //First store user submitted data in database
         //Inset show
         SQLiteStatement statement = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SHOWS +
-                "(" + dbHelper.COL_NAME + ", " + dbHelper.COL_ISFAVORITE + ") VALUES (?, ?);");
+                "(" + dbHelper.COL_NAME + ", " + dbHelper.COL_ISFAVORITE + ", " + dbHelper.COL_LASTWATCHEDAT + ") VALUES (?, ?, ?);");
         statement.bindString(1, show.getName());
         //Ternary operator. If the show is a favorite, assign 1
         long isFavorite = (show.isFavorite()) ? 1:0;
         statement.bindLong(2, isFavorite);
+
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        statement.bindString(3, formatter.format(show.getLastWatchedAt()));
         show.setId(statement.executeInsert()); //Method return the ID which we can set
 
 
@@ -128,18 +132,55 @@ public class SQLiteShowDAO implements ShowDAOInf {
         //First we compile all needed statements, which will later be used in a for loop
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         SQLiteStatement seasonStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_SEASON +
-                "(" + dbHelper.COL_SEASON + ", " +
-                dbHelper.COL_FKSHOWID + ") VALUES (?, ?, ?);");
+                " (" + dbHelper.COL_SEASON + ", " +
+                dbHelper.COL_FKSHOWID + ") VALUES (?, ?);");
+
         SQLiteStatement episodeStmt = db.compileStatement("INSERT INTO " + dbHelper.TABLE_EPISODE +
                 "(" + dbHelper.COL_EPISODE + ", " +
                 dbHelper.COL_AIRDATE + ", " +
                 dbHelper.COL_FKSEASONID + ") VALUES (?, ?, ?);");
+
         //Separate statement for the episode which has already been watched
         SQLiteStatement watchedEpisodeStmt = db.compileStatement("UPDATE " + dbHelper.TABLE_EPISODE +
-                "SET " + dbHelper.COL_AIRDATE + " = ? " +
+                " SET " + dbHelper.COL_AIRDATE + " = ? " +
                 "WHERE " + dbHelper.COL_ID + " = ?;");
 
-
+        for (Season s : show.getSeasonsAsArrayList()) {
+            long existingSeason = 0;
+            for (Episode e : s.getEpisodesAsArrayList()) {
+                if (e.getDateWatched() != null) {
+                    Cursor c = db.rawQuery("SELECT "+dbHelper.COL_SEASON+" FROM "+dbHelper.TABLE_SEASON+ " se" +
+                            " INNER JOIN " +dbHelper.TABLE_EPISODE + " e ON se."+dbHelper.COL_ID+" = e."+dbHelper.COL_FKSEASONID+
+                            " WHERE se."+dbHelper.COL_SEASON+" = "+s.getSeason()+" AND se."+dbHelper.COL_FKSHOWID+" = "+show.getId()+" AND e."+dbHelper.COL_EPISODE+" = "+e.getEpisode()+";", null);
+                    if (c.moveToFirst()) {
+                        do {
+                            existingSeason = c.getLong(0);
+                        } while (c.moveToNext());
+                    }
+                    watchedEpisodeStmt.bindString(1, formatter.format(e.getAirDate()));
+                    watchedEpisodeStmt.bindLong(2, e.getID());
+                }
+            }
+            if (existingSeason != s.getSeason()) {
+                seasonStmt.bindString(1, String.valueOf(s.getSeason()));
+                seasonStmt.bindString(2, String.valueOf(show.getId()));
+                seasonStmt.executeUpdateDelete();
+                Cursor c = db.rawQuery("SELECT "+dbHelper.COL_ID+" FROM "+dbHelper.TABLE_SEASON+ " se" +
+                        " INNER JOIN " +dbHelper.TABLE_SHOWS + " s ON se."+dbHelper.COL_FKSHOWID+" = s."+dbHelper.COL_ID+
+                        " WHERE se."+dbHelper.COL_SEASON+" = "+s.getSeason()+";", null);
+                long seasonID = 0;
+                if (c.moveToFirst()) {
+                    do {
+                        seasonID = c.getLong(0);
+                    } while (c.moveToNext());
+                }
+                for (Episode e : s.getEpisodesAsArrayList()) {
+                    episodeStmt.bindString(1, String.valueOf(e.getEpisode()));
+                    episodeStmt.bindString(2, formatter.format(e.getAirDate()));
+                    episodeStmt.bindLong(3, seasonID);
+                }
+            }
+        }
 
         return result;
     }
@@ -152,6 +193,39 @@ public class SQLiteShowDAO implements ShowDAOInf {
      */
     @Override
     public ArrayList<Show> getRecentShows() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        Cursor c = db.rawQuery("SELECT s.COL_NAME, s.COL_ISFAV, se.COL_SEASON, e.COL_EPISODE, e.COL_WATCHEDAT, e.COL_AIRDATE, t.COL_THUMBNAILPATH, b.COL_BACKDROPPATH FROM TABLE_SHOWS s " +
+//                "INNER JOIN TABLE_SEASON se ON s.ID = se.FK_SHOW_ID " +
+//                "INNER JOIN TABLE_EPISODE e ON se.ID = e.FK_SEASON_ID " +
+//                "INNER JOIN TABLE_THUMBNAILS t ON s.FK_THUMB_ID = t.ID " +
+//                "INNER JOIN TABLE_BACKDROP b ON s.FK_BACKDROP_ID = b.ID", null);
+        Cursor c = getAllCursor();
+
+        /*
+        * we now have a Cursor which holds all teh date we need. Although it is not yet ordered in lists like in out data model.
+        * */
+
+        //Check Col 3 for last watched date
+        //Date must be 7 days ago or less
+
+        int DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date sevenDaysAgo = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        if(c.moveToFirst()){
+            do{
+                //assing values
+                String column1 = c.getString(0);
+                String column2 = c.getString(1);
+                String column3 = c.getString(2);
+                //Do something Here with values
+
+                if (c.getString(7).equals())
+
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+
         return null;
     }
 
@@ -216,8 +290,8 @@ public class SQLiteShowDAO implements ShowDAOInf {
      * @return true is success
      */
     @Override
-    public boolean updateShowEpisodes(Show show) {
-        return false;
+    public Show updateShowEpisodes(Show show) {
+        return null;
     }
 
     public boolean updateShowThumbnail(Show show) {
@@ -245,6 +319,24 @@ public class SQLiteShowDAO implements ShowDAOInf {
     @Override
     public boolean removeShow(Show show) {
         return false;
+    }
+
+    /**
+     * This method returns a Cursor object which holds all information about all watched shows.
+     * @return Cursor object
+     */
+    private Cursor getAllCursor() {
+        return db.rawQuery("SELECT s."+dbHelper.COL_ID+", s."+dbHelper.COL_NAME+", s."+dbHelper.COL_ISFAVORITE+", s."+dbHelper.COL_LASTWATCHEDAT+"" +
+                ", se."+dbHelper.COL_ID+", se."+dbHelper.COL_SEASON+
+                ", e."+dbHelper.COL_ID+", e."+dbHelper.COL_EPISODE+", e."+dbHelper.COL_WATCHEDAT+", e."+dbHelper.COL_AIRDATE+
+                ", t."+dbHelper.COL_THUMBNAILPATH+", " +
+                "b."+dbHelper.COL_BACKDROPPATH+" " +
+                "FROM "+dbHelper.TABLE_SHOWS+" s " +
+                "INNER JOIN "+dbHelper.TABLE_SEASON+" se ON s."+dbHelper.COL_ID+" = se."+dbHelper.COL_FKSHOWID+" " +
+                "INNER JOIN "+dbHelper.TABLE_EPISODE+" e ON se."+dbHelper.COL_ID+" = e."+dbHelper.COL_FKSEASONID+" " +
+                "INNER JOIN "+dbHelper.TABLE_THUMBNAIL+" t ON s."+dbHelper.COL_FKTHUMBNAILID+" = t."+dbHelper.COL_ID+" " +
+                "INNER JOIN "+dbHelper.TABLE_BACKDROP+" b ON s."+dbHelper.COL_FKBACKDROPID+" = b."+dbHelper.COL_ID+" " +
+                "WHERE e."+dbHelper.COL_WATCHEDAT+" IS NOT NULL AND != \"\";", null);
     }
 
 }

@@ -102,10 +102,10 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                     pE.printStackTrace();
                 } catch (ResponseStatusException rE) {
                     Log.e(this.getClass().getName(), "Error status code"+ String.valueOf(rE.getResponseStatus().getStatusCode()));
-                    //Error code seems to be 34 for every ResponseStatusException. This translates to a resource which could not be fount
+                    //Error code seems to be 34 for every ResponseStatusException. This translates to a resource which could not be found
                     //In this case Episode information.
                     //A possible solution here would be to NOT download any further Episode information and just take user input.
-                    //Maybe display a message of this????
+                    //Maybe display a message for this????
                     rE.printStackTrace();
                     //API error, Do something with this
                 }

@@ -17,6 +17,7 @@ import nl.krakenops.myepisode.R;
 public class Show implements Serializable {
     private long id;
     private String name;
+    private Date lastWatchedAt;
     private int thumbnail = R.drawable.chuck;
     private String thumbnailPath = null; //A thumbnail is shown in the fragments
     private String backdropPath = null; //A backdrop is shown in the ShowDetailActivity
@@ -33,6 +34,10 @@ public class Show implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    public Date getLastWatchedAt() {
+        return lastWatchedAt;
     }
 
     public boolean isFavorite() {
@@ -113,6 +118,10 @@ public class Show implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setLastWatchedAt(Date lastWatchedAt) {
+        this.lastWatchedAt = lastWatchedAt;
     }
 
     public void setThumbnail(int thumbnail) {

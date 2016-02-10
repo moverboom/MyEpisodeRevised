@@ -12,8 +12,8 @@ import nl.krakenops.myepisode.datastorage.DAOFactory;
 public class Episode implements Serializable {
     private long id;
     private int episode;
-    private Date dateWatched;
-    private Date airDate;
+    private Date dateWatched = null;
+    private Date airDate = null;
 
     public Episode(int episode) {
         this.episode = episode;
