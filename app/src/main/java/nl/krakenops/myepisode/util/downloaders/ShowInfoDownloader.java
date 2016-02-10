@@ -88,7 +88,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
                         for (int j = 0; j < episodeList.size(); j++) { //j iterates episode list
                             TvEpisode tvEpisode = episodeList.get(j);
                             Episode episode = new Episode(tvEpisode.getEpisodeNumber());
-                            episode.setAirDate(formatter.parse(tvEpisode.getAirDate()));
+                            episode.setAirDate(formatter.parse((tvEpisode.getAirDate() != null) ? tvEpisode.getAirDate() : "1900/01/01"));
                             Log.d(this.getClass().getName(), "Created new Episode with number" + episode.getEpisode() + " and airdate " + formatter.format(episode.getAirDate()));
                             if (tvEpisode.getEpisodeNumber() == episodeNumber) { //If the episode equals the submitted episode, set the watched date to today >>> episode is watched
                                 episode.setDateWatched(new Date());
@@ -166,6 +166,7 @@ public class ShowInfoDownloader extends AsyncTask<Void, Void, Show> {
     @Override
     protected void onPostExecute(Show result) {
         super.onPostExecute(result);
+        Log.d(this.getClass().getName(), "onPostExecute() called with showID = " + result.getId());
         showPresenter.updateUI(result);
     }
 }

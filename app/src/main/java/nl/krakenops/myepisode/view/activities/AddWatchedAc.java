@@ -6,6 +6,7 @@ import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -95,8 +97,12 @@ public class AddWatchedAc extends AppCompatActivity{
                 show.setName(showNameEditText.getText().toString());
                 Season season = new Season(Integer.parseInt(seasonEditText.getText().toString()));
                 Episode episode = new Episode(Integer.parseInt(episodeEditText.getText().toString()));
+                Log.d(this.getClass().getName(), "Created new Season and Episode with number: " + season.getSeason() + " + " + episode.getEpisode());
+                episode.setDateWatched(new Date());
                 season.addEpisode(episode);
+                show.setLastWatchedAt(new Date());
                 show.addSeason(season);
+                Log.d(this.getClass().getName(), "Created show " + show.getName());
 
                 /*Hiding Soft Keyboard on button press*/
                 InputMethodManager iim = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

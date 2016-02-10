@@ -13,14 +13,14 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
     //Static constants which will be used throughout the class.
     //Database vars
     protected static final String DATABASE_NAME = "MyEpisodeShows";
-    protected static final int DATABASE_VERSION = 1;
+    protected static final int DATABASE_VERSION = 4;
 
     //Tables
     protected static final String TABLE_SHOWS = "shows";
-    protected static final String TABLE_EPISODE = "episode";
-    protected static final String TABLE_SEASON = "season";
-    protected static final String TABLE_THUMBNAIL = "thumbnail";
-    protected static final String TABLE_BACKDROP = "backdrop";
+    protected static final String TABLE_EPISODE = "episodes";
+    protected static final String TABLE_SEASON = "seasons";
+    protected static final String TABLE_THUMBNAIL = "thumbnails";
+    protected static final String TABLE_BACKDROP = "backdrops";
 
     //Columns
     protected static final String COL_ID = "ID";
@@ -47,7 +47,8 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //table which holds thumbnails with backdrop
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_THUMBNAIL +
-                "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " + COL_THUMBNAILPATH + "VARCHAR NOT NULL);");
+                "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_THUMBNAILPATH + " VARCHAR NOT NULL);");
 
         db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_BACKDROP +
                 "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -57,7 +58,7 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
                 "("+COL_ID+" INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_NAME + " VARCHAR NOT NULL, " +
                 COL_ISFAVORITE + " INTEGER DEFAULT 0, " +
-                COL_LASTWATCHEDAT + "VARCHAR, " +
+                COL_LASTWATCHEDAT + " VARCHAR, " +
                 COL_FKTHUMBNAILID + " INTEGER, " +
                 COL_FKBACKDROPID + " INTEGER, " +
                 "FOREIGN KEY("+COL_FKTHUMBNAILID+") REFERENCES "+TABLE_THUMBNAIL+"("+COL_ID+")" +
@@ -81,11 +82,11 @@ public class SQLiteDAOHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String query;
-        query = "DROP TABLE IF EXISTS episode; " +
-                "DROP TABLE IF EXISTS season; " +
-                "DROP TABLE IF EXISTS backdrop; " +
-                "DROP TABLE IF EXISTS shows " +
-                "DROP TABLE IF EXISTS thumbnail;";
+        query = "DROP TABLE IF EXISTS episodes; " +
+                "DROP TABLE IF EXISTS seasons; " +
+                "DROP TABLE IF EXISTS backdrops; " +
+                "DROP TABLE IF EXISTS thumbnails; " +
+                "DROP TABEL IF EXISTS shows;";
         db.execSQL(query);
         onCreate(db);
         db.close();

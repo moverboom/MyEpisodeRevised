@@ -51,13 +51,15 @@ public class ShowPresenterImpl implements ShowPresenter {
     @Override
     public void addEpisode(Show show) {
         if (showList.containsKey(show.getName())) {
+            Log.d(this.getClass().getName(), "Size of seasonList for show "+show.getName()+" is: "+showList.get(show.getName()).getSeasonsAsArrayList().size());
+            Log.d(this.getClass().getName(), "Size of episodeList for seasonList 0 is: "+showList.get(show.getName()).getSeasonsAsArrayList().get(0).getEpisodesAsArrayList().size());
             showList.get(show.getName()).addEpisode(show.getSeasonsAsArrayList().get(0).getEpisodesAsArrayList().get(0), show.getSeasonsAsArrayList().get(0).getSeason()); //When a show is inserted, there is only one season and one episode. The rest is handled by ShowInfoDownloader
             showDAO.updateShowEpisodes(show);
         } else {
             if (showDAO.containsShow(show.getName())) {
                 showList.put(show.getName(), showDAO.updateShowEpisodes(show));
             } else {
-                if (showDAO.insertShow(show) == null) {
+                if (showDAO.insertShow(show) != null) {
                     ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, show, this);
                     showInfoDownloader.execute();
                 }
@@ -119,7 +121,7 @@ public class ShowPresenterImpl implements ShowPresenter {
      */
     public void updateUI(Show show) {
         showList.put(show.getName(), show);
-        Log.d(this.getClass().getName(), "Show ID = " + show.getId());
+        Log.d(this.getClass().getName(), "updateUI() called with showID = " + show.getId());
         showDAO.updateInsertShow(show);
         //view.notifyDataSetChanged();
     }

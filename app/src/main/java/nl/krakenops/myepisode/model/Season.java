@@ -1,5 +1,7 @@
 package nl.krakenops.myepisode.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -68,6 +70,7 @@ public class Season implements Serializable {
     }
 
     public void addEpisode(Episode episode) {
+        Log.d(this.getClass().getName(), "Addes Episode: " + episode.getEpisode() + " to Season " + getSeason());
         if (episodes.containsKey(episode.getEpisode())) {
             if (!episodes.get(episode.getEpisode()).equals(episode)) {
                 episodes.put(episode.getEpisode(), episode);
