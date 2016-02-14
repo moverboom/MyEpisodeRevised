@@ -25,6 +25,7 @@ import nl.krakenops.myepisode.R;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.model.ViewModelHolder;
 import nl.krakenops.myepisode.presenter.ShowPresenter;
 import nl.krakenops.myepisode.presenter.ShowPresenterImpl;
 import nl.krakenops.myepisode.view.adapters.AutoCompleteValues;
@@ -88,27 +89,18 @@ public class AddWatchedAc extends AppCompatActivity{
                 }
             }
             if(notFilled == 0) { //if all fields are filled correct
-                HashMap queryValues = new HashMap<String, String>(); //HashMap for input data
-                queryValues.put("Show", showNameEditText.getText().toString()); //Adding data to HashMap and escaping
-                queryValues.put("Season", seasonEditText.getText().toString());
-                queryValues.put("Episode", episodeEditText.getText().toString());
-
-                Show show = new Show();
-                show.setName(showNameEditText.getText().toString());
-                Season season = new Season(Integer.parseInt(seasonEditText.getText().toString()));
-                Episode episode = new Episode(Integer.parseInt(episodeEditText.getText().toString()));
-                Log.d(this.getClass().getName(), "Created new Season and Episode with number: " + season.getSeason() + " + " + episode.getEpisode());
-                episode.setDateWatched(new Date());
-                season.addEpisode(episode);
-                show.setLastWatchedAt(new Date());
-                show.addSeason(season);
-                Log.d(this.getClass().getName(), "Created show " + show.getName());
+                ViewModelHolder viewModelHolder = new ViewModelHolder(
+                        showNameEditText.getText().toString(),
+                        Integer.parseInt(seasonEditText.getText().toString()),
+                        Integer.parseInt(episodeEditText.getText().toString()),
+                        new Date());
+                Log.d(this.getClass().getName(), "Created a new ViewModelHolder with showName: " + showNameEditText.getText().toString());
 
                 /*Hiding Soft Keyboard on button press*/
                 InputMethodManager iim = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 iim.hideSoftInputFromWindow(showNameEditText.getWindowToken(), 0);
                 /*Save data and set confirm layout*/
-                showPresenter.addEpisode(show);
+                showPresenter.addEpisode(viewModelHolder);
                 //setContentView(R.layout.add_watched_confirm);
             }
         }

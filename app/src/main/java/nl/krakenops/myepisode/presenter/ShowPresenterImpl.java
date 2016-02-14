@@ -11,7 +11,10 @@ import java.util.concurrent.ExecutionException;
 import nl.krakenops.myepisode.datastorage.DAOFactory;
 import nl.krakenops.myepisode.datastorage.SQLiteDAOFactory;
 import nl.krakenops.myepisode.datastorage.ShowDAOInf;
+import nl.krakenops.myepisode.model.Episode;
+import nl.krakenops.myepisode.model.Season;
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.model.ViewModelHolder;
 import nl.krakenops.myepisode.util.downloaders.ShowInfoDownloader;
 import nl.krakenops.myepisode.view.adapters.ViewPagerAdapter;
 
@@ -46,22 +49,32 @@ public class ShowPresenterImpl implements ShowPresenter {
 
     /**
      * Inserts a Show
-     * @param show Show to insert
+     * @param viewModelHolder ViewModelHolder from which to get data
+     * @return true if success
      */
     @Override
-    public void addEpisode(Show show) {
-        if (showList.containsKey(show.getName())) {
-            Log.d(this.getClass().getName(), "Size of seasonList for show "+show.getName()+" is: "+showList.get(show.getName()).getSeasonsAsArrayList().size());
-            Log.d(this.getClass().getName(), "Size of episodeList for seasonList 0 is: "+showList.get(show.getName()).getSeasonsAsArrayList().get(0).getEpisodesAsArrayList().size());
-            showList.get(show.getName()).addEpisode(show.getSeasonsAsArrayList().get(0).getEpisodesAsArrayList().get(0), show.getSeasonsAsArrayList().get(0).getSeason()); //When a show is inserted, there is only one season and one episode. The rest is handled by ShowInfoDownloader
-            showDAO.updateShowEpisodes(show);
+    public void addEpisode(ViewModelHolder viewModelHolder) {
+        Episode tmpEpisode = new Episode(viewModelHolder.getEpisode());
+        tmpEpisode.setDateWatched(viewModelHolder.getWatchedAt());
+        Season tmpSeason = new Season(viewModelHolder.getSeason());
+        tmpSeason.addEpisode(tmpEpisode);
+        Show tmpShow = new Show();
+        tmpShow.setName(viewModelHolder.getShowName());
+        tmpShow.setLastWatchedAt(viewModelHolder.getWatchedAt());
+        tmpShow.addSeason(tmpSeason);
+        if (showList.containsKey(viewModelHolder.getShowName())) {
+            showList.put(tmpShow.getName(), tmpShow);
+            showDAO.updateShowEpisodes(tmpShow);
         } else {
-            if (showDAO.containsShow(show.getName())) {
-                showList.put(show.getName(), showDAO.updateShowEpisodes(show));
+            if (showDAO.containsShow(viewModelHolder.getShowName())) {
+                showDAO.updateShowEpisodes(tmpShow);
+                tmpShow = showDAO.getShowByName(tmpShow.getName());
+                showList.put(tmpShow.getName(), tmpShow);
             } else {
-                if (showDAO.insertShow(show) != null) {
-                    ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, show, this);
+                if (showDAO.insertShow(tmpShow) != null) {
+                    ShowInfoDownloader showInfoDownloader = new ShowInfoDownloader(context, tmpShow, this);
                     showInfoDownloader.execute();
+                    //the onPostExecute method handles the result
                 }
             }
         }

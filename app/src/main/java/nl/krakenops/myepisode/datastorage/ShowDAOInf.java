@@ -86,7 +86,7 @@ public interface ShowDAOInf {
      * @param show Show to update
      * @return true is success
      */
-    Show updateShowEpisodes(Show show);
+    boolean updateShowEpisodes(Show show);
 
     /**
      * Updates the thumbnailPath set for a show.

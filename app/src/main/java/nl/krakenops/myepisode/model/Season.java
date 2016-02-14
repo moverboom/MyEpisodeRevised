@@ -72,7 +72,7 @@ public class Season implements Serializable {
     public void addEpisode(Episode episode) {
         Log.d(this.getClass().getName(), "Addes Episode: " + episode.getEpisode() + " to Season " + getSeason());
         if (episodes.containsKey(episode.getEpisode())) {
-            if (!episodes.get(episode.getEpisode()).equals(episode)) {
+            if (!episodes.get(episode.getEpisode()).equals(episode) && episodes.get(episode.getEpisode()).getDateWatched() != null) {
                 episodes.put(episode.getEpisode(), episode);
             }
         } else {

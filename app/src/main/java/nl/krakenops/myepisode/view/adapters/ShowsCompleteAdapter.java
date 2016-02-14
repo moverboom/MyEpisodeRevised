@@ -105,7 +105,7 @@ public class ShowsCompleteAdapter extends BaseAdapter implements Filterable {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 FilterResults filterResults = new FilterResults();
-                if (constraint != null) {
+                if (constraint != null && constraint.length() > 2) {
                     AutoCompleteJsonParse parser = new AutoCompleteJsonParse();
                     List<AutoCompleteValues> books = parser.getParseJsonWCF(constraint.toString());
 

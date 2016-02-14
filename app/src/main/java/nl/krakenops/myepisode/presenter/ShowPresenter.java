@@ -5,6 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 
 import nl.krakenops.myepisode.model.Show;
+import nl.krakenops.myepisode.model.ViewModelHolder;
 
 /**
  * Created by Matthijs on 27/01/2016.
@@ -15,10 +16,10 @@ public interface ShowPresenter {
 
     /**
      * Inserts a Show
-     * @param show Show to insert
+     * @param viewModelHolder ViewModelHolder from which to get data
      * @return true if success
      */
-    void addEpisode(Show show);
+    void addEpisode(ViewModelHolder viewModelHolder);
 
     /**
      * Returns a List with all shows as Thumbnail.

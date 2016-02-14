@@ -98,7 +98,7 @@ public class Show implements Serializable {
         } else {
             Season tmpSeason = new Season(season);
             tmpSeason.addEpisode(episode);
-            seasons.put(tmpSeason.getSeason(), tmpSeason);
+            seasons.put(season, tmpSeason);
         }
     }
 
@@ -107,7 +107,7 @@ public class Show implements Serializable {
     }
 
     public void addSeason(Season season) {
-        if (!seasons.containsValue(season.getSeason())) {
+        if (!seasons.containsKey(season.getSeason())) {
             seasons.put(season.getSeason(), season);
         } else {
             if (!seasons.get(season.getSeason()).equals(season)) {

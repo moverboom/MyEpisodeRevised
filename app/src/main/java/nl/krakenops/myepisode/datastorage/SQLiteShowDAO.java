@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -195,11 +196,12 @@ public class SQLiteShowDAO implements ShowDAOInf {
      */
     @Override
     public ArrayList<Show> getRecentShows() {
+        ArrayList<Show> shows = new ArrayList<Show>();
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = getAllCursor();
 
 //        /*
-//        * we now have a Cursor which holds all teh date we need. Although it is not yet ordered in lists like in out data model.
+//        * we now have a Cursor which holds all the data we need. Although it is not yet ordered in lists like in our data model.
 //        * */
 
         //Check Col 3 for last watched date
@@ -213,7 +215,10 @@ public class SQLiteShowDAO implements ShowDAOInf {
                 if (c.getString(8) != null) {
                     try {
                         if (formatter.parse(c.getString(8)).after(sevenDaysAgo) || formatter.parse(c.getString(8)).equals(sevenDaysAgo)) {
-                            Log.d(this.getClass().getName(), "Found a show which was watched recently:L " + c.getString(1));
+                            Log.d(this.getClass().getName(), "Found a show which was watched recently: " + c.getString(1));
+                            Show tmpShow = new Show();
+                            tmpShow.setId(c.getLong(0));
+
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();
@@ -225,7 +230,7 @@ public class SQLiteShowDAO implements ShowDAOInf {
         c.close();
         db.close();
 
-        return null;
+        return shows;
     }
 
     /**
@@ -289,8 +294,8 @@ public class SQLiteShowDAO implements ShowDAOInf {
      * @return true is success
      */
     @Override
-    public Show updateShowEpisodes(Show show) {
-        return null;
+    public boolean updateShowEpisodes(Show show) {
+        return false;
     }
 
     public boolean updateShowThumbnail(Show show) {
