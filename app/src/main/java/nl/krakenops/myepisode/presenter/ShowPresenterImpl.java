@@ -4,12 +4,15 @@ import android.content.Context;
 import android.util.Log;
 
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
-import java.util.concurrent.ExecutionException;
+import java.util.Locale;
+import java.util.Map;
 
 import nl.krakenops.myepisode.datastorage.DAOFactory;
-import nl.krakenops.myepisode.datastorage.SQLiteDAOFactory;
 import nl.krakenops.myepisode.datastorage.ShowDAOInf;
 import nl.krakenops.myepisode.model.Episode;
 import nl.krakenops.myepisode.model.Season;
@@ -80,6 +83,10 @@ public class ShowPresenterImpl implements ShowPresenter {
         }
     }
 
+    //Getters for shows use the LinkedHashMap as data source
+    //The database is only accessed when a show a new episode is added.
+    //The LinkedHashMap is automatically updated when this happens
+
     /**
      * Returns a List with all shows as Thumbnail.
      * @return List with Thumbnails
@@ -87,8 +94,10 @@ public class ShowPresenterImpl implements ShowPresenter {
     public ArrayList<Show> getAllShows() {
         /*IMPLEMENT DB CONNECTION*/
         ArrayList<Show> result = new ArrayList<Show>();
-        if (showDAO.getAllShows() != null) {
-            result = showDAO.getAllShows();
+        Iterator iterator = showList.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            result.add((Show)pair.getValue());
         }
         return result;
     }
@@ -101,8 +110,15 @@ public class ShowPresenterImpl implements ShowPresenter {
     public ArrayList<Show> getRecentShows() {
         /*DATE CHECK IS IMPLEMENTED IN DAO*/
         ArrayList<Show> result = new ArrayList<Show>();
-        if (showDAO.getRecentShows() != null) {
-            result = showDAO.getRecentShows();
+        int DAY_IN_MS = 1000 * 60 * 60 * 24;
+        Date sevenDaysAgo = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
+        Iterator iterator = showList.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            if(((Show)pair.getValue()).getLastWatchedAt().before(sevenDaysAgo) || ((Show)pair.getValue()).getLastWatchedAt().equals(sevenDaysAgo)) {
+                result.add((Show)pair.getValue());
+                Log.d(this.getClass().getName(), "found a recently watched show");
+            }
         }
         return result;
     }
@@ -115,8 +131,10 @@ public class ShowPresenterImpl implements ShowPresenter {
     public ArrayList<Show> getFavShows() {
         /*IMPLEMENT CHECK FOR FAVORITE*/
         ArrayList<Show> result = new ArrayList<Show>();
-        if (showDAO.getFavShows() != null) {
-            result = showDAO.getFavShows();
+        Iterator iterator = showList.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry pair = (Map.Entry) iterator.next();
+            if(((Show)pair.getValue()).isFavorite()) result.add((Show)pair.getValue());
         }
         return result;
     }
@@ -138,4 +156,23 @@ public class ShowPresenterImpl implements ShowPresenter {
         showDAO.updateInsertShow(show);
         //view.notifyDataSetChanged();
     }
+
+    /**
+     * Add a show to the collection of shows stored in memory.
+     * This way we don't have to query the database for every request
+     * @param show Show to add
+     */
+    public void addShowToCache(Show show) {
+
+    }
+
+    /**
+     * Check wheter a show exists in the local collection or not
+     * @param show Show to check
+     * @return true if exists
+     */
+    public boolean showExistsInCache(Show show) {
+        return false;
+    }
+
 }

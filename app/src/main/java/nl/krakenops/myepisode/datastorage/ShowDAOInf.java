@@ -40,24 +40,30 @@ public interface ShowDAOInf {
      */
     boolean updateInsertShow(Show show);
 
-    /**
-     * Returns a List with all recently watched shows as as Thumbnail
-     * Recently = 7 days ago or less
-     * @return List with Thumbnails
-     */
-    ArrayList<Show> getRecentShows();
+//    /**
+//     * Returns a List with all recently watched shows as as Thumbnail
+//     * Recently = 7 days ago or less
+//     * @return List with Thumbnails
+//     */
+//    ArrayList<Show> getRecentShows();
+//
+//    /**
+//     * Returns a List with all favorite shows as as Thumbnail
+//     * @return List with Thumbnails
+//     */
+//    ArrayList<Show> getFavShows();
+//
+//    /**
+//     * Returns a List with all watched shows as as Thumbnail
+//     * @return List with Thumbnails
+//     */
+//    ArrayList<Show> getAllShows();
 
     /**
-     * Returns a List with all favorite shows as as Thumbnail
-     * @return List with Thumbnails
+     * Returns an ArrayList which contains all shows.
+     * @return ArrayList with all shows
      */
-    ArrayList<Show> getFavShows();
-
-    /**
-     * Returns a List with all watched shows as as Thumbnail
-     * @return List with Thumbnails
-     */
-    ArrayList<Show> getAllShows();
+    ArrayList<Show> getShows();
 
     /**
      * Returns a show as Thumbnail for a given id

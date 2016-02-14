@@ -188,68 +188,60 @@ public class SQLiteShowDAO implements ShowDAOInf {
         return result;
     }
 
-    /**
-     * Returns a List with all recently watched shows as as Thumbnail
-     * Recently = 7 days ago or less
-     *
-     * @return List with Thumbnails
-     */
-    @Override
-    public ArrayList<Show> getRecentShows() {
-        ArrayList<Show> shows = new ArrayList<Show>();
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = getAllCursor();
-
-//        /*
-//        * we now have a Cursor which holds all the data we need. Although it is not yet ordered in lists like in our data model.
-//        * */
-
-        //Check Col 3 for last watched date
-        //Date must be 7 days ago or less
-
-        int DAY_IN_MS = 1000 * 60 * 60 * 24;
-        Date sevenDaysAgo = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-        if(c.moveToFirst()){
-            do{
-                if (c.getString(8) != null) {
-                    try {
-                        if (formatter.parse(c.getString(8)).after(sevenDaysAgo) || formatter.parse(c.getString(8)).equals(sevenDaysAgo)) {
-                            Log.d(this.getClass().getName(), "Found a show which was watched recently: " + c.getString(1));
-                            Show tmpShow = new Show();
-                            tmpShow.setId(c.getLong(0));
-
-                        }
-                    } catch (ParseException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }while(c.moveToNext());
-        }
-        c.close();
-        db.close();
-
-        return shows;
-    }
-
-    /**
-     * Returns a List with all favorite shows as as Thumbnail
-     *
-     * @return List with Thumbnails
-     */
-    @Override
-    public ArrayList<Show> getFavShows() {
-        return null;
-    }
+//    /**
+//     * Returns a List with all recently watched shows as as Thumbnail
+//     * Recently = 7 days ago or less
+//     *
+//     * @return List with Thumbnails
+//     */
+//    @Override
+//    public ArrayList<Show> getRecentShows() {
+//        ArrayList<Show> shows = new ArrayList<Show>();
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        int DAY_IN_MS = 1000 * 60 * 60 * 24;
+//        Date sevenDaysAgo = new Date(System.currentTimeMillis() - (7 * DAY_IN_MS));
+//        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+//
+//        Cursor c = db.rawQuery("SELECT * FROM " +dbHelper.TABLE_SHOWS+
+//                " WHERE " +dbHelper.COL_LASTWATCHEDAT+ " >= "+formatter.format(sevenDaysAgo)+";", null);
+//        Log.d(this.getClass().getName(), "Found " + c.getCount()+" results");
+//
+////        /*
+////        * we now have a Cursor which holds all the data we need. Although it is not yet ordered in lists like in our data model.
+////        * */
+//
+//
+//        c.close();
+//        db.close();
+//
+//        return shows;
+//    }
+//
+//    /**
+//     * Returns a List with all favorite shows as as Thumbnail
+//     *
+//     * @return List with Thumbnails
+//     */
+//    @Override
+//    public ArrayList<Show> getFavShows() {
+//        return null;
+//    }
+//
+//    /**
+//     * Returns a List with all watched shows as as Thumbnail
+//     *
+//     * @return List with Thumbnails
+//     */
+//    @Override
+//    public ArrayList<Show> getAllShows() {
+//        return null;
+//    }
 
     /**
-     * Returns a List with all watched shows as as Thumbnail
-     *
-     * @return List with Thumbnails
+     * Returns an ArrayList which contains all shows.
+     * @return ArrayList with all shows
      */
-    @Override
-    public ArrayList<Show> getAllShows() {
+    public ArrayList<Show> getShows() {
         return null;
     }
 
@@ -325,21 +317,5 @@ public class SQLiteShowDAO implements ShowDAOInf {
         return false;
     }
 
-    /**
-     * This method returns a Cursor object which holds all information about all watched shows.
-     * @return Cursor object
-     */
-    private Cursor getAllCursor() {
-        return db.rawQuery("SELECT s."+dbHelper.COL_ID+", s."+dbHelper.COL_NAME+", s."+dbHelper.COL_ISFAVORITE+", s."+dbHelper.COL_LASTWATCHEDAT +
-                ", se."+dbHelper.COL_ID+", se."+dbHelper.COL_SEASON+
-                ", e."+dbHelper.COL_ID+", e."+dbHelper.COL_EPISODE+", e."+dbHelper.COL_WATCHEDAT+", e."+dbHelper.COL_AIRDATE+
-                ", t."+dbHelper.COL_THUMBNAILPATH+", " +
-                "b."+dbHelper.COL_BACKDROPPATH+" " +
-                "FROM "+dbHelper.TABLE_SHOWS+" s " +
-                "INNER JOIN "+dbHelper.TABLE_SEASON+" se ON s."+dbHelper.COL_ID+" = se."+dbHelper.COL_FKSHOWID+" " +
-                "INNER JOIN "+dbHelper.TABLE_EPISODE+" e ON se."+dbHelper.COL_ID+" = e."+dbHelper.COL_FKSEASONID+" " +
-                "INNER JOIN "+dbHelper.TABLE_THUMBNAIL+" t ON s."+dbHelper.COL_FKTHUMBNAILID+" = t."+dbHelper.COL_ID+" " +
-                "INNER JOIN "+dbHelper.TABLE_BACKDROP+" b ON s."+dbHelper.COL_FKBACKDROPID+" = b."+dbHelper.COL_ID+";", null);
-    }
 
 }
