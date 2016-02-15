@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="string_no_shows">Click the + to add a show</string>
+    <string name="string_no_favs">Why not click the on your favorite show</string>
+</resources>

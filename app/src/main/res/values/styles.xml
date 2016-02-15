@@ -23,4 +23,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="favIcon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:drawableLeft">@drawable/ic_fav_show</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
 </resources>

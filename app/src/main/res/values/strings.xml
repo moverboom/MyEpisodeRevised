@@ -4,4 +4,7 @@
     <string name="action_remove_show">Delete Show</string>
     <string name="title_activity_add_watched">Add Watched</string>
     <string name="title_activity_show_detail">Chuck</string>
+    <string name="action_favorite_icon_title">Favorite</string>
+    <string name="string_no_shows">Click the + to add a show</string>
+    <string name="string_no_favs">Why not click the on your favorite show</string>
 </resources>
