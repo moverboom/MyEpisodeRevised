@@ -279,6 +279,24 @@ public class SQLiteShowDAO implements ShowDAOInf {
     }
 
     /**
+     * Sets whether a show is a favorite or not using the given show object
+     * @param name Show to set as a String
+     * @return true if success
+     */
+    public boolean setShowFavorite(String name, boolean favorite) {
+        return false;
+    }
+
+    /**
+     * Sets whether a show is a favorite or not using the given show object
+     * @param id Show to set as a id
+     * @return true if success
+     */
+    public boolean setShowFavorite(int id, boolean favorite) {
+        return false;
+    }
+
+    /**
      * Updates the episode watched.
      * Uses the available Season and Episode models to get the correct information.
      *

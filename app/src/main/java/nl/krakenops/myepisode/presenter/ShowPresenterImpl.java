@@ -140,7 +140,7 @@ public class ShowPresenterImpl implements ShowPresenter {
     }
 
     public void setShowFavorite(Show show) {
-        if (showDAO.setShowFavorite(show)) {
+        if (showDAO.setShowFavorite(show.getName(), show.isFavorite())) {
             showList.put(show.getName(), show);
         }
         Log.d("ThumbnailPresenter", "Updating " + show.getName() + " to favorite = " + show.isFavorite());

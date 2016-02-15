@@ -87,6 +87,20 @@ public interface ShowDAOInf {
     boolean setShowFavorite(Show show);
 
     /**
+     * Sets whether a show is a favorite or not using the given show object
+     * @param name Show to set as a String
+     * @return true if success
+     */
+    boolean setShowFavorite(String name, boolean favorite);
+
+    /**
+     * Sets whether a show is a favorite or not using the given show object
+     * @param id Show to set as a id
+     * @return true if success
+     */
+    boolean setShowFavorite(int id, boolean favorite);
+
+    /**
      * Updates the episode watched.
      * Uses the available Season and Episode models to get the correct information.
      * @param show Show to update
